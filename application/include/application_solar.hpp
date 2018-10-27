@@ -4,6 +4,8 @@
 #include "application.hpp"
 #include "model.hpp"
 #include "structs.hpp"
+#include "../../build/SceneGraph.h"
+#include "../../build/Node.h"
 
 // gpu representation of model
 class ApplicationSolar : public Application {
@@ -22,8 +24,10 @@ class ApplicationSolar : public Application {
 
   // draw all objects
   void render() const;
+  SceneGraph *sceneGraph = new SceneGraph;
 
  protected:
+  void initializeSceneGraph();
   void initializeShaderPrograms();
   void initializeGeometry();
   // update uniform values
@@ -32,6 +36,9 @@ class ApplicationSolar : public Application {
   void uploadProjection();
   // upload view matrix
   void uploadView();
+  void renderPlanet();
+  void renderEachPlanet(glm::fvec3 distanceFromOrigin) const;
+
 
   // cpu representation of model
   model_object planet_object;
@@ -40,6 +47,7 @@ class ApplicationSolar : public Application {
   glm::fmat4 m_view_transform;
   // camera projection matrix
   glm::fmat4 m_view_projection;
+  
 };
 
 #endif
