@@ -95,10 +95,10 @@ void ApplicationSolar::uploadUniforms() {
 
 //initialize the scene graph nodes
 void ApplicationSolar::initializeSceneGraph() {
-	Node *sun = new Node;
+	/*Node *sun = new Node;
 	sun->parent = NULL;
 	sun->worldTransform = glm::mat4{};
-	sceneGraph->setRoot(sun);
+	sceneGraph->setRoot(sun);*/
 }
 
 // load shader sources

@@ -4,8 +4,8 @@
 #include "application.hpp"
 #include "model.hpp"
 #include "structs.hpp"
-#include "../../build/SceneGraph.h"
-#include "../../build/Node.h"
+#include "../include/SceneGraph.h"
+#include "../include/Node.h"
 
 // gpu representation of model
 class ApplicationSolar : public Application {
@@ -24,7 +24,7 @@ class ApplicationSolar : public Application {
 
   // draw all objects
   void render() const;
-  SceneGraph *sceneGraph = new SceneGraph;
+  //SceneGraph *sceneGraph = new SceneGraph;
 
  protected:
   void initializeSceneGraph();
