@@ -95,10 +95,10 @@ void ApplicationSolar::uploadUniforms() {
 
 //initialize the scene graph nodes
 void ApplicationSolar::initializeSceneGraph() {
-	Node *sun = new Node;
+	/*Node *sun = new Node;
 	sun->parent = NULL;
 	sun->worldTransform = glm::mat4{};
-	sceneGraph->setRoot(sun);
+	sceneGraph->setRoot(sun);*/
 }
 
 // load shader sources
@@ -154,13 +154,34 @@ void ApplicationSolar::initializeGeometry() {
 ///////////////////////////// callback functions for window events ////////////
 // handle key input
 void ApplicationSolar::keyCallback(int key, int action, int mods) {
-  if (key == GLFW_KEY_W  && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-    m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.0f, 0.0f, -0.1f});
-    uploadView();
+  if (key == GLFW_KEY_W) {
+	  cameraPos += cameraSpeed * cameraFront;
   }
-  else if (key == GLFW_KEY_S  && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
-    m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.0f, 0.0f, 0.1f});
-    uploadView();
+  else {
+	  cameraPos += cameraSpeed * cameraFront;
+  }
+
+  if (key == GLFW_KEY_S)
+  {
+	  cameraPos -= cameraSpeed * cameraFront;
+  }
+  else {
+	  cameraPos -= cameraSpeed * cameraFront;
+  }
+
+  if (key == GLFW_KEY_A)
+  {
+	  cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * pow(cameraSpeed, 2);
+  }
+  else {
+	  cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * pow(cameraSpeed, 2);
+  }
+  if (key == GLFW_KEY_D)
+  {
+	  cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * pow(cameraSpeed, 2);
+  }
+  else {
+	  cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * pow(cameraSpeed, 2);
   }
 }
 
@@ -177,8 +198,31 @@ void ApplicationSolar::resizeCallback(unsigned width, unsigned height) {
   uploadProjection();
 }
 
-
 // exe entry point
 int main(int argc, char* argv[]) {
   Application::run<ApplicationSolar>(argc, argv, 3, 2);
 }
+
+
+/*
+
+void ProcessMouseMovement(GLfloat xoffset, GLfloat yoffset, GLboolean  constrainPitch = true)
+{
+xoffset *= this->MouseSensitivity;
+yoffset *= this->MouseSensitivity;
+
+this->Yaw   += xoffset;
+this->Pitch += yoffset;
+
+if (constrainPitch)
+{
+if (this->Pitch > 89.0f)
+this->Pitch = 89.0f;
+if (this->Pitch < -89.0f)
+this->Pitch = -89.0f;
+}
+
+this->updateCameraVectors();
+}
+
+*/

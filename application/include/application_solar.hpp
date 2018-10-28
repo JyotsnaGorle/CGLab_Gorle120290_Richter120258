@@ -4,8 +4,8 @@
 #include "application.hpp"
 #include "model.hpp"
 #include "structs.hpp"
-#include "../../build/SceneGraph.h"
-#include "../../build/Node.h"
+#include "../include/SceneGraph.h"
+#include "../include/Node.h"
 
 // gpu representation of model
 class ApplicationSolar : public Application {
@@ -24,7 +24,7 @@ class ApplicationSolar : public Application {
 
   // draw all objects
   void render() const;
-  SceneGraph *sceneGraph = new SceneGraph;
+  //SceneGraph *sceneGraph = new SceneGraph; 
 
  protected:
   void initializeSceneGraph();
@@ -47,6 +47,12 @@ class ApplicationSolar : public Application {
   glm::fmat4 m_view_transform;
   // camera projection matrix
   glm::fmat4 m_view_projection;
+
+  glm::vec3 cameraPos = glm::vec3(0.0f, 15.0f, 3.0f);
+  glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+  glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+  GLfloat cameraSpeed = 0.02f;
+
   
 };
 
