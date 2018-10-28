@@ -157,15 +157,8 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
   if (key == GLFW_KEY_W) {
 	  cameraPos += cameraSpeed * cameraFront;
   }
-  else {
-	  cameraPos += cameraSpeed * cameraFront;
-  }
-
   if (key == GLFW_KEY_S)
   {
-	  cameraPos -= cameraSpeed * cameraFront;
-  }
-  else {
 	  cameraPos -= cameraSpeed * cameraFront;
   }
 
@@ -173,14 +166,9 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
   {
 	  cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * pow(cameraSpeed, 2);
   }
-  else {
-	  cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * pow(cameraSpeed, 2);
-  }
+
   if (key == GLFW_KEY_D)
   {
-	  cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * pow(cameraSpeed, 2);
-  }
-  else {
 	  cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * pow(cameraSpeed, 2);
   }
 }
