@@ -24,6 +24,7 @@ class ApplicationSolar : public Application {
 
   // draw all objects
   void render() const;
+
   //SceneGraph *sceneGraph = new SceneGraph; 
 
  protected:

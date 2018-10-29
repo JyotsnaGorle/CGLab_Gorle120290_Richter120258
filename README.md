@@ -42,3 +42,7 @@ this framework is licensed undet the GPL v3
 * **glm** is licensed under the Happy Bunny License (Modified MIT)
 * **tinyobjloader** is licensed under 2 clause BSD
 * **stb_image** is public domain
+
+# CGLab_Gorle120290_Richter120258
+# CGLab_Gorle120290_Richter120258
+
