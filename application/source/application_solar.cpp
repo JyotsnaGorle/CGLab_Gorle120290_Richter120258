@@ -39,6 +39,8 @@ ApplicationSolar::~ApplicationSolar() {
 void ApplicationSolar::render() const {
 
 	// render all planet nodes 
+	glm::mat4 localTransform = scene_graph->root->getLocalTransform();
+	// the vect3 dist from origin 
 	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 0.0f });
 	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 5.0f });
 	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 10.0f });
@@ -95,10 +97,13 @@ void ApplicationSolar::uploadUniforms() {
 
 //initialize the scene graph nodes
 void ApplicationSolar::initializeSceneGraph() {
-	/*Node *sun = new Node;
+	Node *sun = new Node;
 	sun->parent = NULL;
+	sun->localTransform = glm::mat4{};
 	sun->worldTransform = glm::mat4{};
-	sceneGraph->setRoot(sun);*/
+	scene_graph = new SceneGraph();
+	scene_graph->root = sun;
+	//sun has children
 }
 
 // load shader sources
@@ -115,7 +120,9 @@ void ApplicationSolar::initializeShaderPrograms() {
 
 // load models
 void ApplicationSolar::initializeGeometry() {
-  model planet_model = model_loader::obj(m_resource_path + "models/sphere.obj", model::NORMAL);
+	GeometryNode *geometryNode = new GeometryNode;
+	geometryNode->setGeometry(model_loader::obj(m_resource_path + "models/sphere.obj", model::NORMAL));
+	model planet_model = geometryNode->getGeometry();
 
   // generate vertex array object
   glGenVertexArrays(1, &planet_object.vertex_AO);
