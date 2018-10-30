@@ -3,7 +3,6 @@
 	Node::Node(){}
 	Node::~Node() {
 		delete(parent);
-		delete();
 	}
 
 	Node Node::getParent() {

@@ -1,7 +1,7 @@
 #pragma once
 #include<iostream>
 #include<string>
-#include "Node.h"
+#include "../include/Node.h"
 
 using namespace std;
 class SceneGraph
@@ -15,8 +15,6 @@ public:
 
 	string getName();
 	Node getRoot();
-
-private:
 	void setName(string name);
 	void setRoot(Node *root);
 };

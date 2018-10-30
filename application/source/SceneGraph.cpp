@@ -4,20 +4,18 @@
 
 SceneGraph::SceneGraph()
 { 
+	root = new Node;
+	root->setLocalTransform(glm::mat4(0,0,0,0,
+		0, 0, 0, 0, 
+		0, 0, 0, 0, 
+		0, 0, 0, 0));
 }
 
 
 SceneGraph::~SceneGraph()
 {
 	delete(root);
-	delete(sceneGraphInstance);
 }
-
-SceneGraph *SceneGraph::getClassInstance()
-{
-	return *sceneGraphInstance;
-}
-
 
 string SceneGraph::getName() {
 	return name;

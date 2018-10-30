@@ -4,13 +4,15 @@
 #include "application.hpp"
 #include "model.hpp"
 #include "structs.hpp"
-#include "../include/SceneGraph.h"
-#include "../include/Node.h"
 #include "GeometryNode.h"
+#include "SceneGraph.h"
+#include "Node.h"
 
 // gpu representation of model
 class ApplicationSolar : public Application {
  public:
+	 SceneGraph *scene_graph;
+
   // allocate and initialize objects
   ApplicationSolar(std::string const& resource_path);
   // free allocated objects
@@ -25,8 +27,6 @@ class ApplicationSolar : public Application {
 
   // draw all objects
   void render() const;
-
-  //SceneGraph *sceneGraph = new SceneGraph; 
 
  protected:
   void initializeSceneGraph();
@@ -54,7 +54,6 @@ class ApplicationSolar : public Application {
   glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
   glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
   GLfloat cameraSpeed = 0.02f;
-  SceneGraph *scene_graph;
 };
 
 #endif

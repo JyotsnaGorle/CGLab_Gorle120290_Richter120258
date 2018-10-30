@@ -40,8 +40,10 @@ void ApplicationSolar::render() const {
 
 	// render all planet nodes 
 	glm::mat4 localTransform = scene_graph->root->getLocalTransform();
+	glm::vec3 dist = glm::fvec3{ localTransform[3][0], localTransform[3][1], localTransform[3][2] };
 	// the vect3 dist from origin 
-	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 0.0f });
+	renderEachPlanet(dist);
+	// get children and render
 	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 5.0f });
 	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 10.0f });
 	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 15.0f });
@@ -97,17 +99,11 @@ void ApplicationSolar::uploadUniforms() {
 
 //initialize the scene graph nodes
 void ApplicationSolar::initializeSceneGraph() {
-	Node *sun = new Node;
-	sun->parent = NULL;
-	sun->localTransform = glm::mat4{};
-	sun->worldTransform = glm::mat4{};
-	scene_graph = new SceneGraph();
-	scene_graph->root = sun;
-	//sun has children
+	scene_graph = new SceneGraph;
 }
 
 // load shader sources
-void ApplicationSolar::initializeShaderPrograms() {
+void ApplicationSolar::initializeShaderPrograms() { 
   // store shader program objects in container
   m_shaders.emplace("planet", shader_program{{{GL_VERTEX_SHADER,m_resource_path + "shaders/simple.vert"},
                                            {GL_FRAGMENT_SHADER, m_resource_path + "shaders/simple.frag"}}});

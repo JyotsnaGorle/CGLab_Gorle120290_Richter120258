@@ -1,9 +1,13 @@
 #include<model.hpp>
 #include "Node.h"
-#include "../include/GeometryNode.h"
+#include "GeometryNode.h"
 
-GeometryNode::GeometryNode(){}
-GeometryNode::~GeometryNode() {}
+GeometryNode::GeometryNode()
+{
+}
+GeometryNode::~GeometryNode() 
+{
+}
 
 
 model GeometryNode::getGeometry() {
