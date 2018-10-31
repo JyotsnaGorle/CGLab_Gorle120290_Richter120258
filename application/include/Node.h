@@ -19,7 +19,7 @@ public:
 	Node();
 	~Node();
 
-	Node getParent();
+	Node* getParent();
 
 	void setParent(Node *parent);
 

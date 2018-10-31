@@ -5,6 +5,6 @@
     "\\application\\include",
     "\\application\\source"
   ],
-  "SelectedNode": "\\application\\source\\application_solar.cpp",
+  "SelectedNode": "\\application\\include\\SceneGraph.h",
   "PreviewInSolutionExplorer": false
 }

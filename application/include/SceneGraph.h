@@ -15,6 +15,8 @@ public:
 
 	string getName();
 	Node getRoot();
+
+private:
 	void setName(string name);
 	void setRoot(Node *root);
 };

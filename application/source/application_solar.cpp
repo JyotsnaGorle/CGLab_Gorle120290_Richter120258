@@ -37,17 +37,46 @@ ApplicationSolar::~ApplicationSolar() {
 }
 
 void ApplicationSolar::render() const {
+	Node root = scene_graph->getRoot();
+	list<Node> children = root.getChildrenList();
+	//doAction(root->getLocalTransform());
+	traverseChildren(&root, &root, children);
 
-	// render all planet nodes 
-	glm::mat4 localTransform = scene_graph->root->getLocalTransform();
-	glm::vec3 dist = glm::fvec3{ localTransform[3][0], localTransform[3][1], localTransform[3][2] };
-	// the vect3 dist from origin 
-	renderEachPlanet(dist);
-	// get children and render
-	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 5.0f });
+	/*renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 5.0f });
 	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 10.0f });
-	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 15.0f });
+	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 15.0f });*/
+}
 
+void ApplicationSolar::traverseChildren(Node *root, Node *parent, list<Node> children) const{
+	int i = 1;
+	std::list<Node>::iterator ptr;
+	std::list<Node>::iterator end;
+	
+	if (children.size() == 0 && parent->getName() == root->getName()) {
+		// only the root node is present and render the root
+		doAction(root->getLocalTransform());
+		return;
+	}
+	if (children.size() != 0) {
+		//get first child and render
+		doAction(root->getLocalTransform());
+		ptr = children.begin();
+		end = children.end();
+		Node firstChild = *ptr;
+		traverseChildren(&firstChild, root, firstChild.getChildrenList());
+	}
+	if (children.size() == 0) {
+		if (ptr == end) {
+			doAction(ptr->getLocalTransform());
+			return;
+		}
+		traverseChildren(&(*ptr++), parent->getParent(), ptr++->getChildrenList());
+	}	
+}
+
+void ApplicationSolar::doAction(glm::mat4 localTransform) const{
+	glm::vec3 dist = glm::fvec3{ localTransform[3][0], localTransform[3][1], localTransform[3][2] };
+	renderEachPlanet(dist);
 }
 
 void ApplicationSolar::renderEachPlanet(glm::fvec3 distanceFromOrigin) const{

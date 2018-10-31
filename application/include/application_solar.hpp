@@ -40,6 +40,8 @@ class ApplicationSolar : public Application {
   void uploadView();
   void renderPlanet();
   void renderEachPlanet(glm::fvec3 distanceFromOrigin) const;
+  void traverseChildren(Node *root, Node *parent, list<Node> children) const;
+  void doAction(glm::mat4 localTransform) const;
 
 
   // cpu representation of model

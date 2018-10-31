@@ -4,16 +4,27 @@
 
 SceneGraph::SceneGraph()
 { 
-	root = new Node;
-	root->setLocalTransform(glm::mat4(0,0,0,0,
+	Node *sun = new Node;
+	sun->name = "Sun";
+	sun->setLocalTransform(glm::mat4(0,0,0,0,
 		0, 0, 0, 0, 
 		0, 0, 0, 0, 
 		0, 0, 0, 0));
+	setRoot(sun);
+	Node *mercury = new Node;
+	mercury->name = "Mercury";
+	mercury->setParent(sun);
+	mercury->setLocalTransform(glm::mat4(0, 0, 0, 0,
+		0, 0, 0, 0,
+		0, 0, 0, 5.0f,
+		0, 0, 0, 0));
+	sun->addChildren(*mercury);
 }
 
 
 SceneGraph::~SceneGraph()
 {
+
 	delete(root);
 }
 

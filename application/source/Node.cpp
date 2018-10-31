@@ -2,11 +2,11 @@
 
 	Node::Node(){}
 	Node::~Node() {
-		delete(parent);
+		/*delete(parent);*/
 	}
 
-	Node Node::getParent() {
-		return *parent;
+	Node* Node::getParent() {
+		return parent;
 	}
 
 	void Node::setParent(Node *parent) {
