@@ -54,7 +54,11 @@ class ApplicationSolar : public Application {
 
   glm::vec3 cameraPos = glm::vec3(0.0f, 15.0f, 3.0f);
   glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+  glm::vec3 cameraback = glm::vec3(0.0f, 0.0f, 1.0f);
   glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+  glm::vec3 cameradown = glm::vec3(0.0f, -1.0f, 0.0f);
+  glm::vec3 cameraLeft = glm::vec3(-1.0f, 0.0f, 0.0f);
+  glm::vec3 cameraRight = glm::vec3(1.0f, 0.0f, 0.0f);
   GLfloat cameraSpeed = 0.02f;
 };
 

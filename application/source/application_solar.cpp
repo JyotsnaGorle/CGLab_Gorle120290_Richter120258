@@ -39,12 +39,12 @@ ApplicationSolar::~ApplicationSolar() {
 void ApplicationSolar::render() const {
 	Node root = scene_graph->getRoot();
 	list<Node> children = root.getChildrenList();
-	//doAction(root->getLocalTransform());
-	traverseChildren(&root, &root, children);
+	//traverseChildren(&root, &root, children);
 
-	/*renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 5.0f });
+	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 0.0f });
+	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 5.0f });
 	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 10.0f });
-	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 15.0f });*/
+	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 15.0f });
 }
 
 void ApplicationSolar::traverseChildren(Node *root, Node *parent, list<Node> children) const{
@@ -186,22 +186,44 @@ void ApplicationSolar::initializeGeometry() {
 ///////////////////////////// callback functions for window events ////////////
 // handle key input
 void ApplicationSolar::keyCallback(int key, int action, int mods) {
-  if (key == GLFW_KEY_W) {
-	  cameraPos += cameraSpeed * cameraFront;
+  if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+	  // moving camera  to zoom in
+	  m_view_transform = glm::translate(m_view_transform, cameraFront);
+	  uploadView();
   }
-  if (key == GLFW_KEY_S)
+  if (key == GLFW_KEY_S && (action == GLFW_PRESS || action == GLFW_REPEAT))
   {
-	  cameraPos -= cameraSpeed * cameraFront;
+	  //moving camera to move up the screen
+	  m_view_transform = glm::translate(m_view_transform, cameraUp);
+	  uploadView();
   }
 
-  if (key == GLFW_KEY_A)
+  if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT))
   {
-	  cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * pow(cameraSpeed, 2);
+	  //moving the camera to focus on left of the screen
+	  m_view_transform = glm::translate(m_view_transform, cameraLeft);
+	  uploadView();
   }
 
-  if (key == GLFW_KEY_D)
+  if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT))
   {
-	  cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * pow(cameraSpeed, 2);
+	  //moving the camera to focus on right of the screen
+	  m_view_transform = glm::translate(m_view_transform, cameraRight);
+	  uploadView();
+  }
+
+  if (key == GLFW_KEY_Z && (action == GLFW_PRESS || action == GLFW_REPEAT))
+  {
+	  //moving camera to move up the screen
+	  m_view_transform = glm::translate(m_view_transform, cameradown);
+	  uploadView();
+  }
+
+  if (key == GLFW_KEY_F && (action == GLFW_PRESS || action == GLFW_REPEAT))
+  {
+	  //moving camera to zoom out the screen
+	  m_view_transform = glm::translate(m_view_transform, cameraback);
+	  uploadView();
   }
 }
 
