@@ -66,3 +66,6 @@
 	glm::vec3 Node::getDist() {
 		return this->dist;
 	};
+	double Node::getSize() {
+		return this->size;
+	}

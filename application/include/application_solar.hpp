@@ -39,7 +39,7 @@ class ApplicationSolar : public Application {
   // upload view matrix
   void uploadView();
   void renderPlanet();
-  void renderEachPlanet(glm::fvec3 distanceFromOrigin) const;
+  void renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::mat4 model_matrix, double size) const;
   void traverseChildren(Node *root, Node *parent, list<Node> children) const;
   void doAction(glm::mat4 localTransform) const;
 
@@ -59,7 +59,10 @@ class ApplicationSolar : public Application {
   glm::vec3 cameradown = glm::vec3(0.0f, -1.0f, 0.0f);
   glm::vec3 cameraLeft = glm::vec3(-1.0f, 0.0f, 0.0f);
   glm::vec3 cameraRight = glm::vec3(1.0f, 0.0f, 0.0f);
-  GLfloat cameraSpeed = 0.02f;
+  GLfloat cameraSpeed = 0.000001f;
+  bool isMouseUp = true;
+  float mouseX = 0;
+  float mouseY = 0;
 };
 
 #endif

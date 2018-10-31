@@ -38,60 +38,41 @@ ApplicationSolar::~ApplicationSolar() {
 
 void ApplicationSolar::render() const {
 	Node root = scene_graph->getRoot();
-	list<Node> children = root.getChildrenList();
-	//traverseChildren(&root, &root, children);
-	cout << root.getLocalTransform()[3][1];
-	doAction(root.getLocalTransform());
-	for (auto i : children) {
-		cout << i.getLocalTransform()[3][1];
-		/*doAction(i.getLocalTransform());*/
-		renderEachPlanet(i.getDist());
-	}
-	/*renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 0.0f });
-	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 5.0f });
-	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 10.0f });
-	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 15.0f });*/
-}
-
-void ApplicationSolar::traverseChildren(Node *root, Node *parent, list<Node> children) const{
-	int i = 1;
-	std::list<Node>::iterator ptr;
-	std::list<Node>::iterator end;
 	
-	if (children.size() == 0 && parent->getName() == root->getName()) {
-		// only the root node is present and render the root
-		doAction(root->getLocalTransform());
-		return;
-	}
-	if (children.size() != 0) {
-		//get first child and render
-		doAction(root->getLocalTransform());
-		ptr = children.begin();
-		end = children.end();
-		Node firstChild = *ptr;
-		traverseChildren(&firstChild, root, firstChild.getChildrenList());
-	}
-	if (children.size() == 0) {
-		if (ptr == end) {
-			doAction(ptr->getLocalTransform());
-			return;
+	//the sun rotate around the origin since it's dist is set to 0
+	glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{ 0.0f, 0.1f, 0.0f });
+	//render the sun
+	renderEachPlanet(root.getDist(), model_matrix, root.getSize());
+
+	// loop through children of sun
+	list<Node> children = root.getChildrenList();
+
+	for (auto each : children) {
+		// set the model matrix for the planets
+		model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{ 0.0f, 0.1f, 0.0f });
+		
+		//check if planet has any sattelites
+		if (each.getChildrenList().size() > 0) {
+			// planet has satelite and has to rotate around planet
+			for (auto eachChild : each.getChildrenList()) {
+				// set new model matrix to rotate around the parents model matrix
+				glm::fmat4 model_matrix2 = glm::rotate(model_matrix, float(glfwGetTime()*0.1f), glm::fvec3{ 0.0f, 0.1f, 0.0f });
+				// translate with respect to planet origin hence send model_matrix2
+				renderEachPlanet(eachChild.getDist(), model_matrix2, eachChild.getSize());
+			}
 		}
-		traverseChildren(&(*ptr++), parent->getParent(), ptr++->getChildrenList());
-	}	
+		renderEachPlanet(each.getDist(), model_matrix, each.getSize());
+	}
 }
 
-void ApplicationSolar::doAction(glm::mat4 localTransform) const{
-	glm::vec3 dist = glm::fvec3{ localTransform[3][0], localTransform[3][1], localTransform[3][2] };
-	renderEachPlanet(dist);
-}
 
-void ApplicationSolar::renderEachPlanet(glm::fvec3 distanceFromOrigin) const{
+void ApplicationSolar::renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::fmat4 model_matrix, double size) const{
 
 	// bind shader to upload uniforms
 	glUseProgram(m_shaders.at("planet").handle);
 
-	glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{ 0.0f, 0.1f, 0.0f });
 	model_matrix = glm::translate(model_matrix, distanceFromOrigin);
+	model_matrix = glm::scale(model_matrix, glm::fvec3{ size, size, size });
 	glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
 		1, GL_FALSE, glm::value_ptr(model_matrix));
 
@@ -108,6 +89,9 @@ void ApplicationSolar::renderEachPlanet(glm::fvec3 distanceFromOrigin) const{
 }
 
 void ApplicationSolar::uploadView() {
+	//rotate the view window with given x and y positions
+	m_view_transform = glm::rotate(m_view_transform, -mouseX, glm::fvec3{ 0, 1.0f, 0 });
+	m_view_transform = glm::rotate(m_view_transform, -mouseY, glm::fvec3{ 1.0f, 0, 0 });
   // vertices are transformed in camera space, so camera transform must be inverted
   glm::fmat4 view_matrix = glm::inverse(m_view_transform);
   // upload matrix to gpu
@@ -236,6 +220,12 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
 //handle delta mouse movement input
 void ApplicationSolar::mouseCallback(double pos_x, double pos_y) {
   // mouse handling
+	if (isMouseUp) { // if mouse is on window
+		mouseX += pos_x * cameraSpeed;
+		mouseY += pos_y * cameraSpeed;
+		uploadView();
+	}
+	uploadView();
 }
 
 //handle resizing
