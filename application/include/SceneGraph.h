@@ -19,5 +19,6 @@ public:
 private:
 	void setName(string name);
 	void setRoot(Node *root);
+	void addPLanets(Node *parent);
 };
 

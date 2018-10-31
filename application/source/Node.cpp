@@ -37,7 +37,7 @@
 	}
 
 	glm::mat4 Node::getLocalTransform() {
-		return localTransform;
+		return this->localTransform;
 	}
 
 	void Node::setLocalTransform(glm::mat4 localTransform) {
@@ -59,3 +59,10 @@
 	void Node::removeChildren(string nodeName) {
 		//this->children.remove_if([&](Node each) { return each.name.compare(nodeName) == 0; });
 	}
+
+	void Node::setDist(glm::vec3 dist) {
+		this->dist = dist;
+	};
+	glm::vec3 Node::getDist() {
+		return this->dist;
+	};

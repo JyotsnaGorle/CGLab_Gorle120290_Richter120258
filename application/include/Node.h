@@ -15,6 +15,7 @@ public:
 	glm::mat4 localTransform;
 	glm::mat4 worldTransform;
 	Node *parent;
+	glm::vec3 dist;
 
 	Node();
 	~Node();
@@ -43,5 +44,8 @@ void setWorldTransform(glm::mat4 worldTransform);
 void addChildren(Node childNode);
 
 void removeChildren(string nodeName);
+
+void setDist(glm::vec3 dist);
+glm::vec3 getDist();
 };
 

@@ -40,11 +40,17 @@ void ApplicationSolar::render() const {
 	Node root = scene_graph->getRoot();
 	list<Node> children = root.getChildrenList();
 	//traverseChildren(&root, &root, children);
-
-	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 0.0f });
+	cout << root.getLocalTransform()[3][1];
+	doAction(root.getLocalTransform());
+	for (auto i : children) {
+		cout << i.getLocalTransform()[3][1];
+		/*doAction(i.getLocalTransform());*/
+		renderEachPlanet(i.getDist());
+	}
+	/*renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 0.0f });
 	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 5.0f });
 	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 10.0f });
-	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 15.0f });
+	renderEachPlanet(glm::fvec3{ 0.0f, 0.0f, 15.0f });*/
 }
 
 void ApplicationSolar::traverseChildren(Node *root, Node *parent, list<Node> children) const{
