@@ -241,27 +241,3 @@ void ApplicationSolar::resizeCallback(unsigned width, unsigned height) {
 int main(int argc, char* argv[]) {
   Application::run<ApplicationSolar>(argc, argv, 3, 2);
 }
-
-
-/*
-
-void ProcessMouseMovement(GLfloat xoffset, GLfloat yoffset, GLboolean  constrainPitch = true)
-{
-xoffset *= this->MouseSensitivity;
-yoffset *= this->MouseSensitivity;
-
-this->Yaw   += xoffset;
-this->Pitch += yoffset;
-
-if (constrainPitch)
-{
-if (this->Pitch > 89.0f)
-this->Pitch = 89.0f;
-if (this->Pitch < -89.0f)
-this->Pitch = -89.0f;
-}
-
-this->updateCameraVectors();
-}
-
-*/
