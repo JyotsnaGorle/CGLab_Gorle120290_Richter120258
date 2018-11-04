@@ -1,6 +1,6 @@
 #ifndef APPLICATION_SOLAR_HPP
 #define APPLICATION_SOLAR_HPP
-
+#include <math.h>
 #include "application.hpp"
 #include "model.hpp"
 #include "structs.hpp"
@@ -41,9 +41,13 @@ class ApplicationSolar : public Application {
   void renderPlanet();
   void renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::mat4 model_matrix, double size) const;
   glm::mat4 rotateAndTranslate(glm::mat4 model_matrix, Node node) const;
+  void bindGeometry(model model, model_object object);
 
   // cpu representation of model
   model_object planet_object;
+  model_object star_object;
+
+  std::vector<float> star_buffer;
   
   // camera transform matrix
   glm::fmat4 m_view_transform;
