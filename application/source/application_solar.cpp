@@ -11,7 +11,7 @@ using namespace gl;
 //dont load gl bindings from glfw
 #define GLFW_INCLUDE_NONE
 
-#define NUM_STARS 1000
+#define NUMBER_OF_STARS 1000
 #include <GLFW/glfw3.h>
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -53,7 +53,7 @@ void ApplicationSolar::render() const {
 
 	for (auto each : children) {
 		// set the model matrix for the planets
-		model_matrix = rotateAndTranslate({}, each);
+		model_matrix = rotateAndTranslate(glm::mat4(1.0), each);
 		//check if planet has any sattelites
 		if (each.getChildrenList().size() > 0) {
 			// planet has satelite and has to rotate around planet
@@ -72,7 +72,7 @@ void ApplicationSolar::render() const {
 	// bind the VAO to draw
 	glBindVertexArray(star_object.vertex_AO);
 	// draw bound vertex array using bound shader
-	glDrawArrays(GL_POINTS, 0, NUM_STARS);
+	glDrawArrays(GL_POINTS, 0, NUMBER_OF_STARS);
 }
 
 glm::mat4 ApplicationSolar::rotateAndTranslate(glm::mat4 model_matrix, Node node) const{
@@ -147,15 +147,15 @@ void ApplicationSolar::initializeSceneGraph() {
 	scene_graph = new SceneGraph;
 
 	//data for VBO for a star
-	for (int i = 0; i < NUM_STARS; i++) {
-		//Position
-		star_buffer.push_back(random(-50, 50)); // x
-		star_buffer.push_back(random(-50, 50)); // y
-		star_buffer.push_back(random(-50, 50)); // z
-		//Color
-		star_buffer.push_back(random(0, 1)); // r
-		star_buffer.push_back(random(0, 1)); // g
-		star_buffer.push_back(random(0, 1)); // b
+	for (int i = 0; i < NUMBER_OF_STARS; i++) {
+		//Position x,y,z
+		star_buffer.push_back(random(-50, 50));
+		star_buffer.push_back(random(-50, 50));
+		star_buffer.push_back(random(-50, 50));
+		//Color RGB
+		star_buffer.push_back(random(0, 1));
+		star_buffer.push_back(random(0, 1));
+		star_buffer.push_back(random(0, 1));
 	}
 }
 
@@ -217,8 +217,8 @@ void ApplicationSolar::initializeGeometry() {
 	// transfer number of indices to model object 
 	planet_object.num_elements = GLsizei(planet_model.indices.size());
 
-  //====================stars
-  model star_model = { star_buffer,model::POSITION | model::NORMAL };
+  //====================vertex specifications for stars====================
+  model star_model = { star_buffer,model::POSITION  };
 
   // generate vertex array object
   glGenVertexArrays(1, &star_object.vertex_AO);

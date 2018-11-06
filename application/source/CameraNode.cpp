@@ -13,5 +13,6 @@ glm::mat4 CameraNode::getProjectionMatrix() {
 	return projectionMatrix;
 }
 void CameraNode::setProjectionMatrix(glm::mat4 matrix) {
+	// build the projection matrix with glm frustum function
 	this->projectionMatrix = projectionMatrix;
 }

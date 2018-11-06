@@ -41,6 +41,7 @@
 	}
 
 	void Node::setLocalTransform(glm::mat4 localTransform) {
+		// should change the world space
 		this->localTransform = localTransform;
 	}
 
