@@ -46,6 +46,7 @@ class ApplicationSolar : public Application {
   // cpu representation of model
   model_object planet_object;
   model_object star_object;
+  model_object orbit_object;
 
   std::vector<float> star_buffer;
   std::vector<float> orbit_buffer;
