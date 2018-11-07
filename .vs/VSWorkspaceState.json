@@ -2,9 +2,12 @@
   "ExpandedNodes": [
     "",
     "\\application",
-    "\\application\\include",
-    "\\application\\source"
+    "\\application\\source",
+    "\\framework",
+    "\\resources",
+    "\\resources\\models",
+    "\\resources\\shaders"
   ],
-  "SelectedNode": "\\application\\include\\SceneGraph.h",
+  "SelectedNode": "\\application\\source\\application_solar.cpp",
   "PreviewInSolutionExplorer": false
 }

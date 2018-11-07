@@ -30,7 +30,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  ,m_view_transform{glm::translate(glm::fmat4{}, glm::fvec3{0.0f, 0.0f, 16.0f})}
  ,m_view_projection{utils::calculate_projection_matrix(initial_aspect_ratio)}
 {
-  initializeSceneGraph();
+  initializeData();
   initializeGeometry();
   initializeShaderPrograms();
 }
@@ -117,10 +117,11 @@ void ApplicationSolar::uploadView() {
 }
 
 void ApplicationSolar::uploadProjection() {
-  // upload matrix to gpu
+  // upload matrix to gpu for stars
   
   glUniformMatrix4fv(m_shaders.at("star").u_locs.at("ProjectionMatrix"),
 	  1, GL_FALSE, glm::value_ptr(m_view_projection));
+  // upload matrix to gpu for planets
   glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ProjectionMatrix"),
 	  1, GL_FALSE, glm::value_ptr(m_view_projection));
 }
@@ -143,10 +144,10 @@ void ApplicationSolar::uploadUniforms() {
 ///////////////////////////// intialisation functions /////////////////////////
 
 //initialize the scene graph nodes
-void ApplicationSolar::initializeSceneGraph() {
+void ApplicationSolar::initializeData() {
 	scene_graph = new SceneGraph;
 
-	//data for VBO for a star
+	//VBO for star
 	for (int i = 0; i < NUMBER_OF_STARS; i++) {
 		//Position x,y,z
 		star_buffer.push_back(random(-50, 50));
@@ -156,6 +157,14 @@ void ApplicationSolar::initializeSceneGraph() {
 		star_buffer.push_back(random(0, 1));
 		star_buffer.push_back(random(0, 1));
 		star_buffer.push_back(random(0, 1));
+	}
+	for (int i = 0; i < 4; i++) {
+		orbit_buffer.push_back(0.0f);
+		orbit_buffer.push_back(0.0f);
+		orbit_buffer.push_back(0.0f);
+		orbit_buffer.push_back(0.0f);
+		orbit_buffer.push_back(0.0f);
+		orbit_buffer.push_back(0.0f);
 	}
 }
 

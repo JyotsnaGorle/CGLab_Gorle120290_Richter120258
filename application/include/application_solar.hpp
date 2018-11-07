@@ -29,7 +29,7 @@ class ApplicationSolar : public Application {
   void render() const;
 
  protected:
-  void initializeSceneGraph();
+  void initializeData();
   void initializeShaderPrograms();
   void initializeGeometry();
   // update uniform values
@@ -48,6 +48,7 @@ class ApplicationSolar : public Application {
   model_object star_object;
 
   std::vector<float> star_buffer;
+  std::vector<float> orbit_buffer;
   
   // camera transform matrix
   glm::fmat4 m_view_transform;
