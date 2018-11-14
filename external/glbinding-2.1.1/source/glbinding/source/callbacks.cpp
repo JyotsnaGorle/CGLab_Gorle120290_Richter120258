@@ -13,7 +13,7 @@ glbinding::FunctionCallback g_afterCallback;
 
 } // namespace
 
-
+ 
 namespace glbinding 
 {
 

@@ -11,6 +11,7 @@ using namespace gl;
 //dont load gl bindings from glfw
 #define GLFW_INCLUDE_NONE
 
+#define M_PI  3.14159265358979323846   // pi
 #define NUMBER_OF_STARS 1000
 #include <GLFW/glfw3.h>
 
@@ -77,7 +78,7 @@ void ApplicationSolar::render() const {
 	// render stars
 	glUseProgram(m_shaders.at("orbit").handle);
 	// bind the VAO to draw
-	glBindVertexArray(star_object.vertex_AO);
+	glBindVertexArray(orbit_object.vertex_AO);
 	// draw bound vertex array using bound shader
 	glDrawArrays(GL_LINE_LOOP, 0, 4);
 }
@@ -177,17 +178,47 @@ void ApplicationSolar::initializeData() {
 		star_buffer.push_back(random(0, 1));
 		star_buffer.push_back(random(0, 1));
 	}
-	// to plot points on 4 different points on the screen to atleast get a line loop
-	for (int i = 0; i <= 4; i++) {
-		//x y z
-		orbit_buffer.push_back(i + 20.0f);
-		orbit_buffer.push_back(i + 20.0f);
-		orbit_buffer.push_back(i + 20.0f);
-		// color all white points RGB
-		orbit_buffer.push_back(1.0f);
-		orbit_buffer.push_back(1.0f);
-		orbit_buffer.push_back(1.0f);
-	}
+	
+	////orbits
+	//float increment = 2.0f *M_PI / 100;
+	////orbits for planets
+	//for (int i = 0; i < 8 ; i++) {
+	//	//if (planets[i].isMoon == false) {
+	//	float radius = i * 1.0f;
+
+	//	for (float rad = 0.0f; rad < 2.0f * M_PI; rad += increment) {
+	//		orbit_buffer.push_back(radius * cos(rad)); // x
+	//		orbit_buffer.push_back(0.0f); // y
+	//		orbit_buffer.push_back(radius * sin(rad)); // z
+	//												   //Color
+	//		orbit_buffer.push_back(random(0, 1)); // x
+	//		orbit_buffer.push_back(random(0, 1)); // y
+	//		orbit_buffer.push_back(random(0, 1)); // z
+	//	}
+	//}
+
+	orbit_buffer.push_back(1.0);
+	orbit_buffer.push_back(1.0);
+	orbit_buffer.push_back(1.0);
+	orbit_buffer.push_back(1.0);
+	orbit_buffer.push_back(1.0);
+	orbit_buffer.push_back(1.0);
+
+	orbit_buffer.push_back(2.0);
+	orbit_buffer.push_back(2.0);
+	orbit_buffer.push_back(2.0);
+	orbit_buffer.push_back(1.0);
+	orbit_buffer.push_back(1.0);
+	orbit_buffer.push_back(1.0);
+
+	orbit_buffer.push_back(2.5);
+	orbit_buffer.push_back(2.5);
+	orbit_buffer.push_back(2.5);
+	orbit_buffer.push_back(1.0);
+	orbit_buffer.push_back(1.0);
+	orbit_buffer.push_back(1.0);
+
+
 }
 
 
@@ -201,7 +232,7 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.at("planet").u_locs["ModelMatrix"] = -1;
   m_shaders.at("planet").u_locs["ViewMatrix"] = -1;
   m_shaders.at("planet").u_locs["ProjectionMatrix"] = -1;
-
+   
   m_shaders.emplace("star", shader_program{ {{GL_VERTEX_SHADER,m_resource_path + "shaders/vao.vert"},
 										   {GL_FRAGMENT_SHADER, m_resource_path + "shaders/vao.frag"}} });
   // request uniform locations for shader program
@@ -272,11 +303,11 @@ void ApplicationSolar::initializeGeometry() {
   // activate first attribute on gpu
   glEnableVertexAttribArray(0);
   // first attribute is 3 floats with no offset & stride
-  glVertexAttribPointer(0, model::POSITION.components, model::POSITION.type, GL_FALSE, star_model.vertex_bytes, star_model.offsets[model::POSITION]);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, 0);
   // activate second attribute on gpu
   glEnableVertexAttribArray(1);
   // second attribute is 3 floats with no offset & stride
-  glVertexAttribPointer(1, model::NORMAL.components, model::NORMAL.type, GL_FALSE, star_model.vertex_bytes, star_model.offsets[model::NORMAL]);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (void*)(sizeof(float) * 3));
 
   // generate generic buffer
   glGenBuffers(1, &star_object.element_BO);
@@ -291,7 +322,7 @@ void ApplicationSolar::initializeGeometry() {
   star_object.num_elements = GLsizei(star_model.indices.size());
 
   //====================vertex specifications for orbits====================
-  model orbit_model = { orbit_buffer, model::POSITION};
+  model orbit_model = { orbit_buffer,model::POSITION | model::NORMAL };
 
   // generate vertex array object
   glGenVertexArrays(1, &orbit_object.vertex_AO);
@@ -324,7 +355,7 @@ void ApplicationSolar::initializeGeometry() {
   // store type of primitive to draw
   orbit_object.draw_mode = GL_LINE_LOOP;
   // transfer number of indices to model object 
-  orbit_object.num_elements = GLsizei(star_model.indices.size());
+  orbit_object.num_elements = GLsizei(orbit_model.indices.size());
 }
 
 ///////////////////////////// callback functions for window events ////////////
