@@ -56,7 +56,7 @@ class ApplicationSolar : public Application {
   // camera projection matrix
   glm::fmat4 m_view_projection;
 
-  glm::vec3 cameraPos = glm::vec3(0.0f, 15.0f, 3.0f);
+  glm::vec3 cameraPos = glm::fvec3{ 0.0f, 0.0f, 16.0f };
   glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
   glm::vec3 cameraback = glm::vec3(0.0f, 0.0f, 1.0f);
   glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);

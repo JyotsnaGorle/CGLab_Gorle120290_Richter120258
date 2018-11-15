@@ -8,8 +8,8 @@ SceneGraph::SceneGraph()
 	sun->name = "Sun";
 	sun->size = 3.0f;
 	sun->setDist(glm::vec3{ 0.0f, 0.0f, 0.0f });
+	sun->color = { 1.0f, 1.0f, 1.0f };
 	this->root = sun;
-	
 	addPLanets(sun);
 }
 

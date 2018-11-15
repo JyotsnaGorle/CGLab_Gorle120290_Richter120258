@@ -17,6 +17,7 @@ public:
 	Node *parent;
 	glm::vec3 dist;
 	double size;
+	glm::vec3 color;
 
 	Node();
 	~Node();
