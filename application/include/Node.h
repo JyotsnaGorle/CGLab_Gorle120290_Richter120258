@@ -18,6 +18,7 @@ public:
 	glm::vec3 dist;
 	double size;
 	glm::vec3 color;
+	float rotationSpeed;
 
 	Node();
 	~Node();

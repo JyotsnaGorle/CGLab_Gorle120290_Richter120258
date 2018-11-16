@@ -39,7 +39,7 @@ class ApplicationSolar : public Application {
   // upload view matrix
   void uploadView();
   void renderPlanet();
-  void renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::mat4 model_matrix, double size) const;
+  void renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::mat4 model_matrix, double size, glm::vec3 color) const;
   glm::mat4 rotateAndTranslate(glm::mat4 model_matrix, Node node) const;
   void bindGeometry(model model, model_object object);
 

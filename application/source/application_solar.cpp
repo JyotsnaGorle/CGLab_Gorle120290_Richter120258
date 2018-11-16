@@ -47,7 +47,7 @@ void ApplicationSolar::render() const {
 	
 	//render the sun
 	glm::fmat4 model_matrix = rotateAndTranslate({}, root);
-	renderEachPlanet(root.getDist(), model_matrix, root.getSize());
+	renderEachPlanet(root.getDist(), model_matrix, root.getSize(), root.color);
 
 	// loop through children of sun
  	list<Node> children = root.getChildrenList();
@@ -61,10 +61,10 @@ void ApplicationSolar::render() const {
 			for (auto eachChild : each.getChildrenList()) {
 				// set new model matrix to rotate around the parents local transform model matrix and render
 				glm::fmat4 model_matrix2 = rotateAndTranslate(model_matrix, eachChild);
-				renderEachPlanet(eachChild.getDist(), model_matrix2, eachChild.getSize());
+				renderEachPlanet(eachChild.getDist(), model_matrix2, eachChild.getSize(), each.color);
 			}
 		}
-		renderEachPlanet(each.getDist(), model_matrix, each.getSize());
+		renderEachPlanet(each.getDist(), model_matrix, each.getSize(), each.color);
 	}
 
 
@@ -113,13 +113,13 @@ void ApplicationSolar::render() const {
 }
 
 glm::mat4 ApplicationSolar::rotateAndTranslate(glm::mat4 model_matrix, Node node) const{
-	model_matrix = glm::rotate(model_matrix, float(glfwGetTime()), glm::fvec3{ 0.0f, 0.1f, 0.0f });
+	model_matrix = glm::rotate(model_matrix, float(glfwGetTime() * node.rotationSpeed), glm::fvec3{ 0.0f, 0.1f, 0.0f });
 	model_matrix = glm::translate(model_matrix, node.getDist());
 	model_matrix = glm::scale(model_matrix, glm::fvec3{ node.getSize(), node.getSize(), node.getSize() });
 	return model_matrix;
 }
 
-void ApplicationSolar::renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::fmat4 model_matrix, double size) const{
+void ApplicationSolar::renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::fmat4 model_matrix, double size, glm::vec3 color) const{
 
 	// bind shader to upload uniforms
 	glUseProgram(m_shaders.at("planet").handle);
@@ -133,7 +133,7 @@ void ApplicationSolar::renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::fmat
 		1, GL_FALSE, glm::value_ptr(normal_matrix));
 	
 	GLint locationColor = glGetUniformLocation(m_shaders.at("planet").handle, "Color");
-	glUniform3f(locationColor, 0.2, 0.4, 0.0);
+	glUniform3fv(locationColor, 1, glm::value_ptr(color));
 
 	GLint locationLightSource = glGetUniformLocation(m_shaders.at("planet").handle, "lightSource");
 	glUniform3f(locationLightSource, 0.0, 0.0, 0.0);
