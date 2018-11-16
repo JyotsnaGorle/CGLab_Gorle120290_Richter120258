@@ -131,8 +131,24 @@ void ApplicationSolar::renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::fmat
 	glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform) * model_matrix);
 	glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
 		1, GL_FALSE, glm::value_ptr(normal_matrix));
-	GLint location = glGetUniformLocation(m_shaders.at("planet").handle, "Color");
-	glUniform3f(location, 1.0, 1.0, 1.0);
+	
+	GLint locationColor = glGetUniformLocation(m_shaders.at("planet").handle, "Color");
+	glUniform3f(locationColor, 0.2, 0.4, 0.0);
+
+	GLint locationLightSource = glGetUniformLocation(m_shaders.at("planet").handle, "lightSource");
+	glUniform3f(locationLightSource, 0.0, 0.0, 0.0);
+
+	GLint locationDiffuseColor = glGetUniformLocation(m_shaders.at("planet").handle, "diffuseColor");
+	glUniform3f(locationDiffuseColor, 0.3, 0.4, 0.0);
+
+	GLint locationSpeculativeColor = glGetUniformLocation(m_shaders.at("planet").handle, "speculativeColor");
+	glUniform3f(locationSpeculativeColor, 1.0, 1.0, 1.0);
+
+	GLint locationshininess = glGetUniformLocation(m_shaders.at("planet").handle, "shininess");
+	glUniform1f(locationshininess, 24.0f);
+
+	GLint locationCameraPos = glGetUniformLocation(m_shaders.at("planet").handle, "cameraPos");
+	glUniform3f(locationCameraPos, 0.0, 0.0, 16.0);
 
 	// bind the VAO to draw
 	glBindVertexArray(planet_object.vertex_AO);
@@ -241,6 +257,11 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.at("planet").u_locs["ViewMatrix"] = -1;
   m_shaders.at("planet").u_locs["ProjectionMatrix"] = -1;
   m_shaders.at("planet").u_locs["Color"] = -1;
+  m_shaders.at("planet").u_locs["lightSource"] = -1;
+  m_shaders.at("planet").u_locs["diffuseColor"] = -1;
+  m_shaders.at("planet").u_locs["speculativeColor"] = -1;
+  m_shaders.at("planet").u_locs["shininess"] = -1;
+  m_shaders.at("planet").u_locs["cameraPos"] = -1;
    
   m_shaders.emplace("star", shader_program{ {{GL_VERTEX_SHADER,m_resource_path + "shaders/vao.vert"},
 										   {GL_FRAGMENT_SHADER, m_resource_path + "shaders/vao.frag"}} });
