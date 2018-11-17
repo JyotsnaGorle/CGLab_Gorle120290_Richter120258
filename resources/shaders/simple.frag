@@ -18,8 +18,17 @@ uniform vec3 speculativeColor;
 // position vector of the camera
 uniform vec3 cameraPos;
 
-// float value of 24.0
+// float value of 16.0
 uniform float shininess;
+
+// float value between 0 and 1
+uniform float rho;
+
+// color of light white
+uniform vec3 lightColor;
+
+// float value between 0 and 1
+uniform float lightIntensity;
 
 // final color of the elements
 out vec4 out_Color;
@@ -30,9 +39,6 @@ void main() {
   vec3 ambient =  pass_Color;
 
 // beta function
-  float lightIntensity = 0.4;
-  vec3  lightColor = vec3(0.2f, 0.2f, 0.2f);
-
   vec3 phi = lightIntensity * lightColor;
   float light = length(lightSource - frag_pos);
 
@@ -42,13 +48,13 @@ void main() {
   vec3 lightDir = normalize(lightSource - frag_pos);
   float diffuseCoffeicient = max(dot(pass_Normal, lightDir), 0.0);
   // need to get value of rho
-  vec3 diffuse = (diffuseCoffeicient * diffuseColor) / 3.14f;
+  vec3 diffuse = (diffuseCoffeicient * diffuseColor) * rho / 3.14f;
 
 // speculative light
 	vec3 viewDir = normalize(cameraPos - frag_pos);
 	vec3 halfway = normalize(lightDir + viewDir);
-	float shine = 4.0f * 0.1;
-	float specularCoffecient = pow(max(dot(pass_Normal, halfway), 0.0), 16.0);
+	float shine = 4.0f * shininess;
+	float specularCoffecient = pow(max(dot(pass_Normal, halfway), 0.0), shine);
 	vec3 specular = speculativeColor * specularCoffecient;
 
   vec3 finalColor = ambient + beta * (diffuse + specular);

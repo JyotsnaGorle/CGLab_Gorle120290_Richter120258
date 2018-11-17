@@ -110,7 +110,7 @@ void SceneGraph::addPLanets(Node *parent) {
 	moon->setParent(earth);
 	moon->setDist(glm::vec3{ 0.0f, 0.0f, 2.0f });
 	moon->size = 0.2f;
-	moon->color = glm::vec3{ 0.5, 0.5, 0.5 };
+	moon->color = glm::vec3{ 0.2, 0.2, 0.2 };
 	moon->rotationSpeed = 0.1f;
 
 	earth->addChildren(*moon);

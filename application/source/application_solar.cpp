@@ -145,10 +145,19 @@ void ApplicationSolar::renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::fmat
 	glUniform3f(locationSpeculativeColor, 1.0, 1.0, 1.0);
 
 	GLint locationshininess = glGetUniformLocation(m_shaders.at("planet").handle, "shininess");
-	glUniform1f(locationshininess, 24.0f);
+	glUniform1f(locationshininess, 4.0f);
+
+	GLint locationrho = glGetUniformLocation(m_shaders.at("planet").handle, "rho");
+	glUniform1f(locationrho, 0.5f);
 
 	GLint locationCameraPos = glGetUniformLocation(m_shaders.at("planet").handle, "cameraPos");
 	glUniform3f(locationCameraPos, 0.0, 0.0, 16.0);
+
+	GLint locationlightIntensity = glGetUniformLocation(m_shaders.at("planet").handle, "lightIntensity");
+	glUniform1f(locationlightIntensity, 0.4f);
+
+	GLint locationlightColor = glGetUniformLocation(m_shaders.at("planet").handle, "lightColor");
+	glUniform3f(locationlightColor, 1.0, 1.0, 1.0);
 
 	// bind the VAO to draw
 	glBindVertexArray(planet_object.vertex_AO);
@@ -262,6 +271,9 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.at("planet").u_locs["speculativeColor"] = -1;
   m_shaders.at("planet").u_locs["shininess"] = -1;
   m_shaders.at("planet").u_locs["cameraPos"] = -1;
+  m_shaders.at("planet").u_locs["rho"] = -1;
+  m_shaders.at("planet").u_locs["lightIntensity"] = -1;
+  m_shaders.at("planet").u_locs["lightColor"] = -1;
    
   m_shaders.emplace("star", shader_program{ {{GL_VERTEX_SHADER,m_resource_path + "shaders/vao.vert"},
 										   {GL_FRAGMENT_SHADER, m_resource_path + "shaders/vao.frag"}} });
