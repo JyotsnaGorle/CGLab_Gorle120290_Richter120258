@@ -75,41 +75,17 @@ void ApplicationSolar::render() const {
 	// draw bound vertex array using bound shader
 	glDrawArrays(GL_POINTS, 0, NUMBER_OF_STARS);
 
-	// render stars
-	glUseProgram(m_shaders.at("orbit").handle);
-		
-	// bind the VAO to draw
-	glBindVertexArray(orbit_object.vertex_AO);
-	glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ModelViewMatrix"),
-		1, GL_FALSE, glm::value_ptr(glm::fmat4{}));
-	glDrawArrays(GL_LINE_LOOP, 1 * 100, 100);
+	for (auto each : children) {
+		// render orbits
+		glUseProgram(m_shaders.at("orbit").handle);
 
-	// render stars
-	glUseProgram(m_shaders.at("orbit").handle);
+		// bind the VAO to draw
+		glBindVertexArray(orbit_object.vertex_AO);
+		glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ModelViewMatrix"),
+			1, GL_FALSE, glm::value_ptr(glm::fmat4{}));
+		glDrawArrays(GL_LINE_LOOP, 1 * 100, 100);
+	}
 
-	// bind the VAO to draw
-	glBindVertexArray(orbit_object.vertex_AO);
-	glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ModelViewMatrix"),
-		1, GL_FALSE, glm::value_ptr(glm::fmat4{}));
-	glDrawArrays(GL_LINE_LOOP, 2 * 100, 100);
-
-	// render stars
-	glUseProgram(m_shaders.at("orbit").handle);
-
-	// bind the VAO to draw
-	glBindVertexArray(orbit_object.vertex_AO);
-	glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ModelViewMatrix"),
-		1, GL_FALSE, glm::value_ptr(glm::fmat4{}));
-	glDrawArrays(GL_LINE_LOOP, 3 * 100, 100);
-
-	// render stars
-	glUseProgram(m_shaders.at("orbit").handle);
-
-	// bind the VAO to draw
-	glBindVertexArray(orbit_object.vertex_AO);
-	glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ModelViewMatrix"),
-		1, GL_FALSE, glm::value_ptr(glm::fmat4{}));
-	glDrawArrays(GL_LINE_LOOP, 4 * 100, 100);
 }
 
 glm::mat4 ApplicationSolar::rotateAndTranslate(glm::mat4 model_matrix, Node node) const{
@@ -154,10 +130,10 @@ void ApplicationSolar::renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::fmat
 	glUniform3f(locationCameraPos, 0.0, 0.0, 16.0);
 
 	GLint locationlightIntensity = glGetUniformLocation(m_shaders.at("planet").handle, "lightIntensity");
-	glUniform1f(locationlightIntensity, 0.4f);
+	glUniform1f(locationlightIntensity, this->pointLight->lightIntensity);
 
 	GLint locationlightColor = glGetUniformLocation(m_shaders.at("planet").handle, "lightColor");
-	glUniform3f(locationlightColor, 1.0, 1.0, 1.0);
+	glUniform3fv(locationlightColor,1, glm::value_ptr(pointLight->lightColor));
 
 	// bind the VAO to draw
 	glBindVertexArray(planet_object.vertex_AO);
@@ -235,23 +211,31 @@ void ApplicationSolar::initializeData() {
 		star_buffer.push_back(random(0, 1));
 	}
 	
-	//orbits
+	//VBO for orbits
+	// circumference 2PiR
 	float increment = 2.0f *3.14 / 100;
 	//orbits for planets
-	for (int i = 0; i < 8 ; i++) {
-		//if (planets[i].ismoon == false) {
-		float radius = i * 1.0f;
-
+	Node root = scene_graph->getRoot();
+	list<Node> children = root.getChildrenList();
+	int i = 0;
+	for (auto each : children) {
+		float radius = i * each.getDist()[2];
+		i++;
 		for (float rad = 0.0f; rad < 2.0f * 3.14; rad += increment) {
-			orbit_buffer.push_back(radius * cos(rad)); // x
-			orbit_buffer.push_back(0.0f); // y
-			orbit_buffer.push_back(radius * sin(rad)); // z
-													   //color
-			orbit_buffer.push_back(1.0); // x
-			orbit_buffer.push_back(1.0); // y
-			orbit_buffer.push_back(1.0); // z
+		//vertices x,y,z
+			orbit_buffer.push_back(radius * cos(rad)); 
+			orbit_buffer.push_back(0.0f);
+			orbit_buffer.push_back(radius * sin(rad));
+		 //color RGB
+			orbit_buffer.push_back(1.0);
+			orbit_buffer.push_back(1.0);
+			orbit_buffer.push_back(1.0);
 		}
 	}
+
+	pointLight = new PointLightNode;
+	pointLight->lightColor = glm::vec3(1.0, 1.0, 1.0);
+	pointLight->lightIntensity = 0.4f;
 }
 
 

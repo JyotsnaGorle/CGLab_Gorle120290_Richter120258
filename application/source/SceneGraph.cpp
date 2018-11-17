@@ -8,7 +8,7 @@ SceneGraph::SceneGraph()
 	sun->name = "Sun";
 	sun->size = 3.0f;
 	sun->setDist(glm::vec3{ 0.0f, 0.0f, 0.0f });
-	sun->color = { 0.5, 0.5, 0.0 };
+	sun->color = { 1.0, 0.9, 0.1 };
 	sun->rotationSpeed = 0.1f;
 	this->root = sun;
 	addPLanets(sun);
@@ -43,7 +43,7 @@ void SceneGraph::addPLanets(Node *parent) {
 	mercury->setParent(parent);
 	mercury->setDist(glm::vec3{ 0.0f, 0.0f, 4.0f });
 	mercury->size = 0.6f;
-	mercury->color = glm::vec3{ 0.3, 0.3, 0.0 };
+	mercury->color = glm::vec3{ 0.9, 0.5, 0.2 };
 	mercury->rotationSpeed = 0.5f;
 
 	Node *venus = new Node;
@@ -84,7 +84,7 @@ void SceneGraph::addPLanets(Node *parent) {
 	saturn->setDist(glm::vec3{ 0.0f, 0.0f, 18.0f });
 	saturn->size = 2.0f;
 	saturn->color = glm::vec3{ 0.0, 0.0, 0.6 };
-	saturn->rotationSpeed = 0.1f;
+	saturn->rotationSpeed = 0.5f;
 
 	Node *neptune = new Node;
 	neptune->name = "neptune";
@@ -92,7 +92,7 @@ void SceneGraph::addPLanets(Node *parent) {
 	neptune->setDist(glm::vec3{ 0.0f, 0.0f, 21.0f });
 	neptune->size = 2.2f;
 	neptune->color = glm::vec3{ 0.0, 0.0, 0.9 };
-	neptune->rotationSpeed = 0.1f;
+	neptune->rotationSpeed = 0.2f;
 
 	Node *uranus = new Node;
 	uranus->name = "uranus";
@@ -100,7 +100,7 @@ void SceneGraph::addPLanets(Node *parent) {
 	uranus->setDist(glm::vec3{ 0.0f, 0.0f, 24.0f });
 	uranus->size = 2.0f;
 	uranus->color = glm::vec3{ 0.0, 0.8, 0.8 };
-	uranus->rotationSpeed = 0.1f;
+	uranus->rotationSpeed = 0.3f;
 
 	parent->addChildren(*mercury);
 	parent->addChildren(*venus);
@@ -109,7 +109,7 @@ void SceneGraph::addPLanets(Node *parent) {
 	moon->name = "Moon";
 	moon->setParent(earth);
 	moon->setDist(glm::vec3{ 0.0f, 0.0f, 2.0f });
-	moon->size = 0.2f;
+	moon->size = 0.5f;
 	moon->color = glm::vec3{ 0.2, 0.2, 0.2 };
 	moon->rotationSpeed = 0.1f;
 

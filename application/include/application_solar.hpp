@@ -7,6 +7,7 @@
 #include "GeometryNode.h"
 #include "SceneGraph.h"
 #include "Node.h"
+#include "PointLightNode.h"
 
 // gpu representation of model
 class ApplicationSolar : public Application {
@@ -42,6 +43,9 @@ class ApplicationSolar : public Application {
   void renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::mat4 model_matrix, double size, glm::vec3 color) const;
   glm::mat4 rotateAndTranslate(glm::mat4 model_matrix, Node node) const;
   void bindGeometry(model model, model_object object);
+
+  // point light node 
+  PointLightNode *pointLight;
 
   // cpu representation of model
   model_object planet_object;
