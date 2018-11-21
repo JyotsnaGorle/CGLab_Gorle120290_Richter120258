@@ -30,8 +30,12 @@ uniform vec3 lightColor;
 // float value between 0 and 1
 uniform float lightIntensity;
 
+// uniform for mode switch 1 or 2
+uniform float modeSwitch;
+
 // final color of the elements
 out vec4 out_Color;
+
 
 
 void main() {
@@ -57,7 +61,29 @@ void main() {
 	float specularCoffecient = pow(max(dot(pass_Normal, halfway), 0.0), shine);
 	vec3 specular = speculativeColor * specularCoffecient;
 
+// for Toon shading
+	float intensity = dot(lightDir, pass_Normal);
+	vec4 color = vec4(0.0,0.0,0.0,1.0);
+		if (intensity > 0.95) {
+			color = vec4(1.0,0.5,0.5,1.0);
+		}
+		if (intensity > 0.5) {
+			color = vec4(0.6,0.3,0.3,1.0);
+		}
+		if (intensity > 0.25) {
+			color = vec4(0.4,0.2,0.2,1.0);
+		}	
+		else {
+			color = vec4(0.2,0.1,0.1,1.0);
+		}	
+
 // calulate the final color
+
   vec3 finalColor = ambient + beta * (diffuse + specular);
-  out_Color = vec4(finalColor, 1.0);
+  if(modeSwitch == 1.0) {
+	out_Color = vec4(finalColor, 1.0);
+  } 
+  else if(modeSwitch == 2.0) {
+	 out_Color = color;
+  }
 }

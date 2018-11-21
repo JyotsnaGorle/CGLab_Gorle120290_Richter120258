@@ -71,6 +71,7 @@ class ApplicationSolar : public Application {
   bool isMouseUp = true;
   float mouseX = 0;
   float mouseY = 0;
+  float modeSwitch = 1.0;
 };
 
 #endif

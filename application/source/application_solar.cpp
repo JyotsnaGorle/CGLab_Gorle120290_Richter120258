@@ -144,6 +144,10 @@ void ApplicationSolar::renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::fmat
 	GLint locationlightColor = glGetUniformLocation(m_shaders.at("planet").handle, "lightColor");
 	glUniform3fv(locationlightColor,1, glm::value_ptr(pointLight->lightColor));
 
+	// get uniforms in shader program to set the light color from the pointLight Node
+	GLint locationModeSwitch = glGetUniformLocation(m_shaders.at("planet").handle, "modeSwitch");
+	glUniform1f(locationModeSwitch, modeSwitch);
+
 	// bind the VAO to draw
 	glBindVertexArray(planet_object.vertex_AO);
 
@@ -270,6 +274,7 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.at("planet").u_locs["rho"] = -1;
   m_shaders.at("planet").u_locs["lightIntensity"] = -1;
   m_shaders.at("planet").u_locs["lightColor"] = -1;
+  m_shaders.at("planet").u_locs["modeSwitch"] = -1;
    
   m_shaders.emplace("star", shader_program{ {{GL_VERTEX_SHADER,m_resource_path + "shaders/vao.vert"},
 										   {GL_FRAGMENT_SHADER, m_resource_path + "shaders/vao.frag"}} });
@@ -436,6 +441,16 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
   {
 	  //moving camera to zoom out the screen
 	  m_view_transform = glm::translate(m_view_transform, cameraback);
+	  uploadView();
+  }
+
+  if (key == GLFW_KEY_1 && (action == GLFW_PRESS)) {
+	  modeSwitch = 1.0;
+	  uploadView();
+  }
+
+  if (key == GLFW_KEY_2 && (action == GLFW_PRESS)) {
+	  modeSwitch = 2.0;
 	  uploadView();
   }
 }
