@@ -8,6 +8,7 @@ SceneGraph::SceneGraph()
 	sun->name = "Sun";
 	sun->size = 3.0f;
 	sun->setDist(glm::vec3{ 0.0f, 0.0f, 0.0f });
+	// add a yellow color to the sun
 	sun->color = { 1.0, 0.9, 0.1 };
 	sun->rotationSpeed = 0.1f;
 	this->root = sun;
@@ -43,6 +44,7 @@ void SceneGraph::addPLanets(Node *parent) {
 	mercury->setParent(parent);
 	mercury->setDist(glm::vec3{ 0.0f, 0.0f, 4.0f });
 	mercury->size = 0.6f;
+	// add a color to the planet
 	mercury->color = glm::vec3{ 0.9, 0.5, 0.2 };
 	mercury->rotationSpeed = 0.5f;
 
@@ -51,6 +53,7 @@ void SceneGraph::addPLanets(Node *parent) {
 	venus->setParent(parent);
 	venus->setDist(glm::vec3{ 0.0f, 0.0f, 6.0f });
 	venus->size = 0.8f;
+	// add a color to the planet
 	venus->color = glm::vec3{ 0.4, 0.0, 0.0 };
 	venus->rotationSpeed = 0.4f;
 
@@ -59,6 +62,7 @@ void SceneGraph::addPLanets(Node *parent) {
 	earth->setParent(parent);
 	earth->setDist(glm::vec3{ 0.0f, 0.0f, 9.0f });
 	earth->size = 1.0f;
+	// add a color to the planet
 	earth->color = glm::vec3{ 0.0, 0.5, 0.5 };
 	earth->rotationSpeed = 0.3f;
 
@@ -67,6 +71,7 @@ void SceneGraph::addPLanets(Node *parent) {
 	mars->setParent(parent);
 	mars->setDist(glm::vec3{ 0.0f, 0.0f, 12.0f });
 	mars->size = 1.2f;
+	// add a color to the planet
 	mars->color = glm::vec3{ 0.5, 0.0, 0.0 };
 	mars->rotationSpeed = 0.2f;
 
@@ -75,6 +80,7 @@ void SceneGraph::addPLanets(Node *parent) {
 	jupiter->setParent(parent);
 	jupiter->setDist(glm::vec3{ 0.0f, 0.0f, 15.0f });
 	jupiter->size = 1.5f;
+	// add a color to the planet
 	jupiter->color = glm::vec3{ 0.6, 0.6, 0.0 };
 	jupiter->rotationSpeed = 0.1f;
 
@@ -83,6 +89,7 @@ void SceneGraph::addPLanets(Node *parent) {
 	saturn->setParent(parent);
 	saturn->setDist(glm::vec3{ 0.0f, 0.0f, 18.0f });
 	saturn->size = 2.0f;
+	// add a color to the planet
 	saturn->color = glm::vec3{ 0.0, 0.0, 0.6 };
 	saturn->rotationSpeed = 0.5f;
 
@@ -91,6 +98,7 @@ void SceneGraph::addPLanets(Node *parent) {
 	neptune->setParent(parent);
 	neptune->setDist(glm::vec3{ 0.0f, 0.0f, 21.0f });
 	neptune->size = 2.2f;
+	// add a color to the planet
 	neptune->color = glm::vec3{ 0.0, 0.0, 0.9 };
 	neptune->rotationSpeed = 0.2f;
 
@@ -99,6 +107,7 @@ void SceneGraph::addPLanets(Node *parent) {
 	uranus->setParent(parent);
 	uranus->setDist(glm::vec3{ 0.0f, 0.0f, 24.0f });
 	uranus->size = 2.0f;
+	// add a color to the planet
 	uranus->color = glm::vec3{ 0.0, 0.8, 0.8 };
 	uranus->rotationSpeed = 0.3f;
 
@@ -110,6 +119,7 @@ void SceneGraph::addPLanets(Node *parent) {
 	moon->setParent(earth);
 	moon->setDist(glm::vec3{ 0.0f, 0.0f, 2.0f });
 	moon->size = 0.5f;
+	// add a color to the moon
 	moon->color = glm::vec3{ 0.2, 0.2, 0.2 };
 	moon->rotationSpeed = 0.1f;
 

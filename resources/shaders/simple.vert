@@ -10,6 +10,7 @@ uniform mat4 ViewMatrix;
 uniform mat4 ProjectionMatrix;
 uniform mat4 NormalMatrix;
 
+// Vector 3 uniform for color
 uniform vec3 Color;
 
 //passed to the fragment shader

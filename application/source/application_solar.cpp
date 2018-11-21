@@ -108,30 +108,39 @@ void ApplicationSolar::renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::fmat
 	glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
 		1, GL_FALSE, glm::value_ptr(normal_matrix));
 	
+	// get uniforms in shader program to set the Color
 	GLint locationColor = glGetUniformLocation(m_shaders.at("planet").handle, "Color");
 	glUniform3fv(locationColor, 1, glm::value_ptr(color));
 
+	// get uniforms in shader program to set the vertex of light source
 	GLint locationLightSource = glGetUniformLocation(m_shaders.at("planet").handle, "lightSource");
 	glUniform3f(locationLightSource, 0.0, 0.0, 0.0);
 
+	// get uniforms in shader program to set the DiffuseColor
 	GLint locationDiffuseColor = glGetUniformLocation(m_shaders.at("planet").handle, "diffuseColor");
 	glUniform3f(locationDiffuseColor, 0.3, 0.4, 0.0);
 
+	// get uniforms in shader program to set the SpeculativeColor 
 	GLint locationSpeculativeColor = glGetUniformLocation(m_shaders.at("planet").handle, "speculativeColor");
 	glUniform3f(locationSpeculativeColor, 1.0, 1.0, 1.0);
 
+	// get uniforms in shader program to set the Alpha value in the equation
 	GLint locationshininess = glGetUniformLocation(m_shaders.at("planet").handle, "shininess");
 	glUniform1f(locationshininess, 4.0f);
 
+	// get uniforms in shader program to set the Rho value
 	GLint locationrho = glGetUniformLocation(m_shaders.at("planet").handle, "rho");
 	glUniform1f(locationrho, 0.5f);
 
+	// get uniforms in shader program to set the camera Position
 	GLint locationCameraPos = glGetUniformLocation(m_shaders.at("planet").handle, "cameraPos");
 	glUniform3f(locationCameraPos, 0.0, 0.0, 16.0);
 
+	// get uniforms in shader program to set the light intensity from the pointLight Node
 	GLint locationlightIntensity = glGetUniformLocation(m_shaders.at("planet").handle, "lightIntensity");
 	glUniform1f(locationlightIntensity, this->pointLight->lightIntensity);
 
+	// get uniforms in shader program to set the light color from the pointLight Node
 	GLint locationlightColor = glGetUniformLocation(m_shaders.at("planet").handle, "lightColor");
 	glUniform3fv(locationlightColor,1, glm::value_ptr(pointLight->lightColor));
 
@@ -233,8 +242,11 @@ void ApplicationSolar::initializeData() {
 		}
 	}
 
+	// define light color and light intensity for the window
 	pointLight = new PointLightNode;
+	// light color set to white
 	pointLight->lightColor = glm::vec3(1.0, 1.0, 1.0);
+	// light intensity set to a float value
 	pointLight->lightIntensity = 0.4f;
 }
 

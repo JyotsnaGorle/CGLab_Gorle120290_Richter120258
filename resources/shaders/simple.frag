@@ -18,7 +18,7 @@ uniform vec3 speculativeColor;
 // position vector of the camera
 uniform vec3 cameraPos;
 
-// float value of 16.0
+// float value for alpha in the equation
 uniform float shininess;
 
 // float value between 0 and 1
@@ -57,6 +57,7 @@ void main() {
 	float specularCoffecient = pow(max(dot(pass_Normal, halfway), 0.0), shine);
 	vec3 specular = speculativeColor * specularCoffecient;
 
+// calulate the final color
   vec3 finalColor = ambient + beta * (diffuse + specular);
   out_Color = vec4(finalColor, 1.0);
 }
