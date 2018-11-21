@@ -63,7 +63,7 @@ void main() {
 
 // for Toon shading
 	float intensity = dot(lightDir, pass_Normal);
-	vec4 color = vec4(0.0,0.0,0.0,1.0);
+	vec4 color = vec4(1.0,0.5,0.5,1.0);
 		if (intensity > 0.95) {
 			color = vec4(1.0,0.5,0.5,1.0);
 		}

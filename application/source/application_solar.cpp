@@ -144,7 +144,7 @@ void ApplicationSolar::renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::fmat
 	GLint locationlightColor = glGetUniformLocation(m_shaders.at("planet").handle, "lightColor");
 	glUniform3fv(locationlightColor,1, glm::value_ptr(pointLight->lightColor));
 
-	// get uniforms in shader program to set the light color from the pointLight Node
+	// get uniforms in shader program to switch between modes
 	GLint locationModeSwitch = glGetUniformLocation(m_shaders.at("planet").handle, "modeSwitch");
 	glUniform1f(locationModeSwitch, modeSwitch);
 
@@ -251,7 +251,7 @@ void ApplicationSolar::initializeData() {
 	// light color set to white
 	pointLight->lightColor = glm::vec3(1.0, 1.0, 1.0);
 	// light intensity set to a float value
-	pointLight->lightIntensity = 0.4f;
+	pointLight->lightIntensity = 1.0f;
 }
 
 
