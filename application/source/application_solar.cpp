@@ -4,6 +4,7 @@
 #include "utils.hpp"
 #include "shader_loader.hpp"
 #include "model_loader.hpp"
+#include "texture_loader.hpp"
 #include <glbinding/gl/gl.h>
 // use gl definitions from glbinding 
 using namespace gl;
@@ -32,6 +33,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  ,m_view_projection{utils::calculate_projection_matrix(initial_aspect_ratio)}
 {
   initializeData();
+  initializeTextures();
   initializeGeometry();
   initializeShaderPrograms();
 }
@@ -44,14 +46,14 @@ ApplicationSolar::~ApplicationSolar() {
 
 void ApplicationSolar::render() const {
 	Node root = scene_graph->getRoot();
-	
+	int i = 0;
 	//render the sun
 	glm::fmat4 model_matrix = rotateAndTranslate({}, root);
-	renderEachPlanet(root.getDist(), model_matrix, root.getSize(), root.color);
+	renderEachPlanet(root.getDist(), model_matrix, root.getSize(), root.color, i++);
 
 	// loop through children of sun
  	list<Node> children = root.getChildrenList();
-
+	
 	for (auto each : children) {
 		// set the model matrix for the planets
 		model_matrix = rotateAndTranslate(glm::mat4(1.0), each);
@@ -61,10 +63,10 @@ void ApplicationSolar::render() const {
 			for (auto eachChild : each.getChildrenList()) {
 				// set new model matrix to rotate around the parents local transform model matrix and render
 				glm::fmat4 model_matrix2 = rotateAndTranslate(model_matrix, eachChild);
-				renderEachPlanet(eachChild.getDist(), model_matrix2, eachChild.getSize(), each.color);
+				renderEachPlanet(eachChild.getDist(), model_matrix2, eachChild.getSize(), each.color, 10);
 			}
 		}
-		renderEachPlanet(each.getDist(), model_matrix, each.getSize(), each.color);
+		renderEachPlanet(each.getDist(), model_matrix, each.getSize(), each.color,i++);
 	}
 
 
@@ -95,7 +97,7 @@ glm::mat4 ApplicationSolar::rotateAndTranslate(glm::mat4 model_matrix, Node node
 	return model_matrix;
 }
 
-void ApplicationSolar::renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::fmat4 model_matrix, double size, glm::vec3 color) const{
+void ApplicationSolar::renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::fmat4 model_matrix, double size, glm::vec3 color, int textureIndex) const{
 
 	// bind shader to upload uniforms
 	glUseProgram(m_shaders.at("planet").handle);
@@ -130,7 +132,7 @@ void ApplicationSolar::renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::fmat
 
 	// get uniforms in shader program to set the Rho value
 	GLint locationrho = glGetUniformLocation(m_shaders.at("planet").handle, "rho");
-	glUniform1f(locationrho, 0.5f);
+	glUniform1f(locationrho, 1.0f);
 
 	// get uniforms in shader program to set the camera Position
 	GLint locationCameraPos = glGetUniformLocation(m_shaders.at("planet").handle, "cameraPos");
@@ -147,6 +149,8 @@ void ApplicationSolar::renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::fmat
 	// get uniforms in shader program to switch between modes
 	GLint locationModeSwitch = glGetUniformLocation(m_shaders.at("planet").handle, "modeSwitch");
 	glUniform1f(locationModeSwitch, modeSwitch);
+	// pass the texture as uniforms to vertext shader 
+	glUniform1i(m_shaders.at("planet").u_locs.at("ColorTexture"), textureIndex);
 
 	// bind the VAO to draw
 	glBindVertexArray(planet_object.vertex_AO);
@@ -251,9 +255,48 @@ void ApplicationSolar::initializeData() {
 	// light color set to white
 	pointLight->lightColor = glm::vec3(1.0, 1.0, 1.0);
 	// light intensity set to a float value
-	pointLight->lightIntensity = 1.0f;
+	pointLight->lightIntensity = 15.0f;
 }
 
+void ApplicationSolar::initializeTextures() {
+	int i = 0;
+	string textureFileName;
+	Node root = scene_graph->getRoot();
+	// loading the texture file for sun
+	loadTextureForEachObject(root.name, i++);
+	list<Node> children = root.getChildrenList();
+
+	for (auto each : children) {
+		textureFileName = each.name;
+		// loading the texture files
+		loadTextureForEachObject(textureFileName, i++);
+	}
+	// loading the texture for moon
+	loadTextureForEachObject("moon", i);
+}
+
+void ApplicationSolar::loadTextureForEachObject(string fileName, int textureObjectindex) {
+	texture_object[textureObjectindex].handle = textureObjectindex;
+	pixel_data textureFiles = texture_loader::file(m_resource_path + "textures/" + fileName + ".png");
+	texture_object[textureObjectindex].target = GL_TEXTURE0 + textureObjectindex;
+	glActiveTexture(texture_object[textureObjectindex].target);
+	// creating openGL type texture objects for each planet
+	glGenTextures(1, &texture_object[textureObjectindex].handle);
+	// binding the texture objects
+	glBindTexture(GL_TEXTURE_2D, texture_object[textureObjectindex].handle);
+
+	// defining the sampling values
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// give texture data and  texture format to openGL
+	glTexImage2D(GL_TEXTURE_2D,
+		0,
+		GL_RGB,
+		textureFiles.width, textureFiles.height,
+		0,
+		textureFiles.channels, textureFiles.channel_type, textureFiles.ptr());
+}
 
 // load shader sources
 void ApplicationSolar::initializeShaderPrograms() { 
@@ -275,6 +318,7 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.at("planet").u_locs["lightIntensity"] = -1;
   m_shaders.at("planet").u_locs["lightColor"] = -1;
   m_shaders.at("planet").u_locs["modeSwitch"] = -1;
+  m_shaders.at("planet").u_locs["ColorTexture"] = -1;
    
   m_shaders.emplace("star", shader_program{ {{GL_VERTEX_SHADER,m_resource_path + "shaders/vao.vert"},
 										   {GL_FRAGMENT_SHADER, m_resource_path + "shaders/vao.frag"}} });
@@ -292,7 +336,7 @@ void ApplicationSolar::initializeShaderPrograms() {
 // load models
 void ApplicationSolar::initializeGeometry() {
 	GeometryNode *geometryNode = new GeometryNode;
-	geometryNode->setGeometry(model_loader::obj(m_resource_path + "models/sphere.obj", model::NORMAL));
+	geometryNode->setGeometry(model_loader::obj(m_resource_path + "models/sphere.obj", model::NORMAL | model::TEXCOORD));
 	model planet_model = geometryNode->getGeometry();
   
 	// generate vertex array object
@@ -315,7 +359,10 @@ void ApplicationSolar::initializeGeometry() {
 	glEnableVertexAttribArray(1);
 	// second attribute is 3 floats with no offset & stride
 	glVertexAttribPointer(1, model::NORMAL.components, model::NORMAL.type, GL_FALSE, planet_model.vertex_bytes, planet_model.offsets[model::NORMAL]);
-
+	// activate third attribute on gpu
+	glEnableVertexAttribArray(2);
+	// third attribute is the texture coodrinates uv
+	glVertexAttribPointer(2, model::TEXCOORD.components, model::TEXCOORD.type, GL_FALSE, planet_model.vertex_bytes, planet_model.offsets[model::TEXCOORD]);
 	// generate generic buffer
 	glGenBuffers(1, &planet_object.element_BO);
 	// bind this as an vertex array buffer containing all attributes

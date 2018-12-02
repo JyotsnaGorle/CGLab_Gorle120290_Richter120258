@@ -4,6 +4,7 @@
 in  vec3 pass_Normal;
 in  vec3 pass_Color;
 in  vec3 frag_pos;
+in  vec2 pass_TexCoordinates; 
 
 // light source 0,0
 uniform vec3 lightSource;
@@ -33,15 +34,21 @@ uniform float lightIntensity;
 // uniform for mode switch 1 or 2
 uniform float modeSwitch;
 
+// uniform for texture sampler
+uniform sampler2D ColorTexture;
+
 // final color of the elements
 out vec4 out_Color;
 
 
 
 void main() {
-// calculating the ambient color
-  vec3 ambient =  pass_Color;
+// using the sampler
+vec4 color_from_tex = texture(ColorTexture, pass_TexCoordinates);
 
+// calculating the ambient color
+  vec3 ambient =  vec3(color_from_tex);
+  
 // beta function
   vec3 phi = lightIntensity * lightColor;
   float light = length(lightSource - frag_pos);
@@ -50,20 +57,22 @@ void main() {
 
 // diffusion function
   vec3 lightDir = normalize(lightSource - frag_pos);
-  float diffuseCoffeicient = max(dot(pass_Normal, lightDir), 0.0);
+  float diffuseCoffeicient = max(dot(pass_Normal, -lightDir), 0.0);
   // need to get value of rho
+  vec3 diffuseColor = vec3(color_from_tex);
   vec3 diffuse = (diffuseCoffeicient * diffuseColor) * rho / 3.14f;
 
 // speculative light
 	vec3 viewDir = normalize(cameraPos - frag_pos);
 	vec3 halfway = normalize(lightDir + viewDir);
-	float shine = 4.0f * shininess;
+	float shine = shininess;
 	float specularCoffecient = pow(max(dot(pass_Normal, halfway), 0.0), shine);
 	vec3 specular = speculativeColor * specularCoffecient;
 
 // for Toon shading
 	float intensity = dot(lightDir, pass_Normal);
 	vec4 color = vec4(1.0,0.5,0.5,1.0);
+	// set darker shades of color depending on intensity of the light on each fragment
 		if (intensity > 0.95) {
 			color = vec4(1.0,0.5,0.5,1.0);
 		}
@@ -79,7 +88,7 @@ void main() {
 
 // calulate the final color
 
-  vec3 finalColor = ambient + beta * (diffuse + specular);
+  vec3 finalColor = ambient + diffuse + specular;
   if(modeSwitch == 1.0) {
 	out_Color = vec4(finalColor, 1.0);
   } 

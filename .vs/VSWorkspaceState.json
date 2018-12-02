@@ -3,14 +3,9 @@
     "",
     "\\application",
     "\\application\\source",
-    "\\external\\glbinding-2.1.1",
-    "\\external\\glbinding-2.1.1\\source",
-    "\\external\\glbinding-2.1.1\\source\\glbinding",
-    "\\external\\glbinding-2.1.1\\source\\glbinding\\source",
-    "\\external\\glbinding-2.1.1\\source\\glbinding\\source\\gl",
     "\\resources",
-    "\\resources\\shaders"
+    "\\resources\\textures"
   ],
-  "SelectedNode": "\\application\\source\\application_solar.cpp",
+  "SelectedNode": "\\resources\\textures",
   "PreviewInSolutionExplorer": false
 }

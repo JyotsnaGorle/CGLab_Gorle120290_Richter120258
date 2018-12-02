@@ -1,6 +1,7 @@
 #ifndef APPLICATION_SOLAR_HPP
 #define APPLICATION_SOLAR_HPP
 #include <math.h>
+#include <string.h>
 #include "application.hpp"
 #include "model.hpp"
 #include "structs.hpp"
@@ -31,6 +32,7 @@ class ApplicationSolar : public Application {
 
  protected:
   void initializeData();
+  void initializeTextures();
   void initializeShaderPrograms();
   void initializeGeometry();
   // update uniform values
@@ -40,9 +42,11 @@ class ApplicationSolar : public Application {
   // upload view matrix
   void uploadView();
   void renderPlanet();
-  void renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::mat4 model_matrix, double size, glm::vec3 color) const;
+  void applyTexture(int i) const;
+  void renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::mat4 model_matrix, double size, glm::vec3 color, int textureIndex) const;
   glm::mat4 rotateAndTranslate(glm::mat4 model_matrix, Node node) const;
   void bindGeometry(model model, model_object object);
+  void loadTextureForEachObject(string fileName, int textureObjectindex);
 
   // point light node 
   PointLightNode *pointLight;
@@ -72,6 +76,7 @@ class ApplicationSolar : public Application {
   float mouseX = 0;
   float mouseY = 0;
   float modeSwitch = 1.0;
+  texture_object texture_object[11];
 };
 
 #endif
