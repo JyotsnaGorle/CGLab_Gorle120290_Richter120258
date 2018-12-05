@@ -37,16 +37,20 @@ uniform float modeSwitch;
 // uniform for texture sampler
 uniform sampler2D ColorTexture;
 
+// uniform for texture sampler Cubemap texture 
+uniform samplerCube ColorTextureCubeMap;
+
 // final color of the elements
 out vec4 out_Color;
 
 
 
 void main() {
-// using the sampler
+// using the sampler #assignment 4
 vec4 color_from_tex = texture(ColorTexture, pass_TexCoordinates);
 
-// calculating the ambient color
+// calculating the ambient color 
+// #assignment 4 get the value from texture sampler
   vec3 ambient =  vec3(color_from_tex);
   
 // beta function
@@ -59,6 +63,7 @@ vec4 color_from_tex = texture(ColorTexture, pass_TexCoordinates);
   vec3 lightDir = normalize(lightSource - frag_pos);
   float diffuseCoffeicient = max(dot(pass_Normal, -lightDir), 0.0);
   // need to get value of rho
+  // #assignment 4 get the value from texture sampler
   vec3 diffuseColor = vec3(color_from_tex);
   vec3 diffuse = (diffuseCoffeicient * diffuseColor) * rho / 3.14f;
 

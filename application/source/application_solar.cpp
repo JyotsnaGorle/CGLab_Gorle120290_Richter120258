@@ -35,6 +35,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
   initializeData();
   // assignmngt #4
   initializeTextures();
+  loadTextureForSkybox();
   initializeGeometry();
   initializeShaderPrograms();
 }
@@ -90,13 +91,43 @@ void ApplicationSolar::render() const {
 		glDrawArrays(GL_LINE_LOOP, 1 * 100, 100);
 	}
 
+	// render a skybox #assignmnet 4
+	renderSkyBox();
+
 }
 
 glm::mat4 ApplicationSolar::rotateAndTranslate(glm::mat4 model_matrix, Node node) const{
-	model_matrix = glm::rotate(model_matrix, float(glfwGetTime() * node.rotationSpeed), glm::fvec3{ 0.0f, 0.1f, 0.0f });
+	model_matrix = glm::rotate(model_matrix, float(glfwGetTime() * node.rotationSpeed), glm::fvec3{ 0.0f, 1.0f, 0.0f });
 	model_matrix = glm::translate(model_matrix, node.getDist());
 	model_matrix = glm::scale(model_matrix, glm::fvec3{ node.getSize(), node.getSize(), node.getSize() });
 	return model_matrix;
+}
+
+void ApplicationSolar::renderSkyBox() const{
+	// bind shader to upload uniforms
+	glUseProgram(m_shaders.at("planet").handle);
+	// transforms for a skybox
+	glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()*0.05), glm::fvec3{ 0.0f, 1.0f, 0.0f });
+	model_matrix = glm::translate(model_matrix, glm::fvec3{ 0,0,0 });
+	model_matrix = glm::scale(model_matrix, glm::fvec3{ 40.0,40.0,40.0 });
+	
+	glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
+		1, GL_FALSE, glm::value_ptr(model_matrix));
+
+	// extra matrix for normal transformation to keep them orthogonal to surface
+	glm::fmat4 normal_matrix = glm::inverseTranspose(glm::inverse(m_view_transform) * model_matrix);
+	glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("NormalMatrix"),
+		1, GL_FALSE, glm::value_ptr(normal_matrix));
+
+	// assignmngt #4 all similar to planet textures
+	// pass the texture as uniforms to vertext shader 
+	//glUniform1i(m_shaders.at("planet").u_locs.at("ColorTextureCubeMap"), texture_object_skybox.handle);
+	glUniform1i(m_shaders.at("planet").u_locs.at("ColorTexture"), 10);
+	// bind the VAO to draw
+	glBindVertexArray(planet_object.vertex_AO);
+
+	// draw bound vertex array using bound shader
+	glDrawElements(planet_object.draw_mode, planet_object.num_elements, model::INDEX.type, NULL);
 }
 
 void ApplicationSolar::renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::fmat4 model_matrix, double size, glm::vec3 color, int textureIndex) const{
@@ -275,18 +306,19 @@ void ApplicationSolar::initializeTextures() {
 		loadTextureForEachObject(textureFileName, i++);
 	}
 	// loading the texture for moon
-	loadTextureForEachObject("moon", i);
+	loadTextureForEachObject("moon", i++);
+	loadTextureForEachObject("skybox", i);
 }
 
 void ApplicationSolar::loadTextureForEachObject(string fileName, int textureObjectindex) {
-	texture_object[textureObjectindex].handle = textureObjectindex;
+	texture_object_planets[textureObjectindex].handle = textureObjectindex;
 	pixel_data textureFiles = texture_loader::file(m_resource_path + "textures/" + fileName + ".png");
-	texture_object[textureObjectindex].target = GL_TEXTURE0 + textureObjectindex;
-	glActiveTexture(texture_object[textureObjectindex].target);
+	texture_object_planets[textureObjectindex].target = GL_TEXTURE0 + textureObjectindex;
+	glActiveTexture(texture_object_planets[textureObjectindex].target);
 	// creating openGL type texture objects for each planet
-	glGenTextures(1, &texture_object[textureObjectindex].handle);
+	glGenTextures(1, &texture_object_planets[textureObjectindex].handle);
 	// binding the texture objects
-	glBindTexture(GL_TEXTURE_2D, texture_object[textureObjectindex].handle);
+	glBindTexture(GL_TEXTURE_2D, texture_object_planets[textureObjectindex].handle);
 
 	// defining the sampling values
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -299,6 +331,33 @@ void ApplicationSolar::loadTextureForEachObject(string fileName, int textureObje
 		textureFiles.width, textureFiles.height,
 		0,
 		textureFiles.channels, textureFiles.channel_type, textureFiles.ptr());
+}
+
+// load the skybox textures for all 6 faces
+void ApplicationSolar::loadTextureForSkybox() {
+	texture_object_skybox.handle = 100;
+
+	glGenTextures(1, &texture_object_skybox.handle);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, texture_object_skybox.handle);
+
+	int width, height, nrChannels;
+	for (unsigned int i = 0; i < skybox_texture_faces.size(); i++)
+	{
+		string filename = skybox_texture_faces[i];
+		pixel_data textureFiles = texture_loader::file(m_resource_path + "textures/" + filename);
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+			0,
+			GL_RGB,
+			textureFiles.width, textureFiles.height,
+			0,
+			textureFiles.channels, textureFiles.channel_type, textureFiles.ptr()
+		);
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 }
 
 // load shader sources

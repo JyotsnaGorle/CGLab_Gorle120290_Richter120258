@@ -47,6 +47,8 @@ class ApplicationSolar : public Application {
   glm::mat4 rotateAndTranslate(glm::mat4 model_matrix, Node node) const;
   void bindGeometry(model model, model_object object);
   void loadTextureForEachObject(string fileName, int textureObjectindex);
+  void loadTextureForSkybox();
+  void renderSkyBox() const;
 
   // point light node 
   PointLightNode *pointLight;
@@ -76,7 +78,18 @@ class ApplicationSolar : public Application {
   float mouseX = 0;
   float mouseY = 0;
   float modeSwitch = 1.0;
-  texture_object texture_object[11];
+  texture_object texture_object_planets[11];
+  texture_object texture_object_skybox;
+
+  vector<std::string> skybox_texture_faces =
+  {
+	"right.jpg",
+	"left.jpg",
+	"top.jpg",
+	"bottom.jpg",
+	"front.jpg",
+	"back.jpg"
+  };
 };
 
 #endif
