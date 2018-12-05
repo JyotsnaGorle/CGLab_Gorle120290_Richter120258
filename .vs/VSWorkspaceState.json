@@ -3,9 +3,9 @@
     "",
     "\\application",
     "\\application\\source",
-    "\\resources",
-    "\\resources\\textures"
+    "\\framework",
+    "\\framework\\source"
   ],
-  "SelectedNode": "\\resources\\textures",
+  "SelectedNode": "\\application\\source\\application_solar.cpp",
   "PreviewInSolutionExplorer": false
 }

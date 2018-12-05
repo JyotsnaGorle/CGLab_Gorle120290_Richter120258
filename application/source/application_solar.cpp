@@ -33,6 +33,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  ,m_view_projection{utils::calculate_projection_matrix(initial_aspect_ratio)}
 {
   initializeData();
+  // assignmngt #4
   initializeTextures();
   initializeGeometry();
   initializeShaderPrograms();
@@ -63,6 +64,7 @@ void ApplicationSolar::render() const {
 			for (auto eachChild : each.getChildrenList()) {
 				// set new model matrix to rotate around the parents local transform model matrix and render
 				glm::fmat4 model_matrix2 = rotateAndTranslate(model_matrix, eachChild);
+				// passing the moon index which is last in the texture object array
 				renderEachPlanet(eachChild.getDist(), model_matrix2, eachChild.getSize(), each.color, 10);
 			}
 		}
@@ -149,6 +151,7 @@ void ApplicationSolar::renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::fmat
 	// get uniforms in shader program to switch between modes
 	GLint locationModeSwitch = glGetUniformLocation(m_shaders.at("planet").handle, "modeSwitch");
 	glUniform1f(locationModeSwitch, modeSwitch);
+	// assignmngt #4
 	// pass the texture as uniforms to vertext shader 
 	glUniform1i(m_shaders.at("planet").u_locs.at("ColorTexture"), textureIndex);
 
@@ -287,7 +290,7 @@ void ApplicationSolar::loadTextureForEachObject(string fileName, int textureObje
 
 	// defining the sampling values
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
 
 	// give texture data and  texture format to openGL
 	glTexImage2D(GL_TEXTURE_2D,
