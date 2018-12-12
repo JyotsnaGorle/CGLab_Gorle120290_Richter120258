@@ -49,6 +49,7 @@ class ApplicationSolar : public Application {
   void loadTextureForEachObject(string fileName, int textureObjectindex);
   void loadTextureForSkybox();
   void renderSkyBox() const;
+  void initializeCustomFrameBuffer();
 
   // point light node 
   PointLightNode *pointLight;
@@ -90,6 +91,9 @@ class ApplicationSolar : public Application {
 	"front.jpg",
 	"back.jpg"
   };
+
+  GLuint fbo_handle = 0;
+  GLuint rbo_handle = 0;
 };
 
 #endif

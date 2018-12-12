@@ -36,8 +36,11 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
   // assignmngt #4
   initializeTextures();
   loadTextureForSkybox();
+  
   initializeGeometry();
   initializeShaderPrograms();
+  // assignment #5
+  initializeCustomFrameBuffer();
 }
 
 ApplicationSolar::~ApplicationSolar() {
@@ -47,6 +50,13 @@ ApplicationSolar::~ApplicationSolar() {
 }
 
 void ApplicationSolar::render() const {
+
+	//bind new custom frame buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo_handle);
+	// clear the framebuffer
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+
 	Node root = scene_graph->getRoot();
 	int i = 0;
 	//render the sun
@@ -66,7 +76,7 @@ void ApplicationSolar::render() const {
 				// set new model matrix to rotate around the parents local transform model matrix and render
 				glm::fmat4 model_matrix2 = rotateAndTranslate(model_matrix, eachChild);
 				// passing the moon index which is last in the texture object array
-				renderEachPlanet(eachChild.getDist(), model_matrix2, eachChild.getSize(), each.color, 10);
+				renderEachPlanet(eachChild.getDist(), model_matrix2, eachChild.getSize(), each.color, 9);
 			}
 		}
 		renderEachPlanet(each.getDist(), model_matrix, each.getSize(), each.color,i++);
@@ -107,7 +117,7 @@ void ApplicationSolar::renderSkyBox() const{
 	// bind shader to upload uniforms
 	glUseProgram(m_shaders.at("planet").handle);
 	// transforms for a skybox
-	glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()*0.05), glm::fvec3{ 0.0f, 1.0f, 0.0f });
+	glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()*0), glm::fvec3{ 0.0f, 1.0f, 0.0f });
 	model_matrix = glm::translate(model_matrix, glm::fvec3{ 0,0,0 });
 	model_matrix = glm::scale(model_matrix, glm::fvec3{ 40.0,40.0,40.0 });
 	
@@ -122,7 +132,7 @@ void ApplicationSolar::renderSkyBox() const{
 	// assignmngt #4 all similar to planet textures
 	// pass the texture as uniforms to vertext shader 
 	//glUniform1i(m_shaders.at("planet").u_locs.at("ColorTextureCubeMap"), texture_object_skybox.handle);
-	glUniform1i(m_shaders.at("planet").u_locs.at("ColorTexture"), 10);
+	glUniform1i(m_shaders.at("planet").u_locs.at("ColorTexture"), 11);
 	// bind the VAO to draw
 	glBindVertexArray(planet_object.vertex_AO);
 
@@ -152,9 +162,9 @@ void ApplicationSolar::renderEachPlanet(glm::fvec3 distanceFromOrigin, glm::fmat
 	glUniform3f(locationLightSource, 0.0, 0.0, 0.0);
 
 	// get uniforms in shader program to set the DiffuseColor
-	GLint locationDiffuseColor = glGetUniformLocation(m_shaders.at("planet").handle, "diffuseColor");
+	/*GLint locationDiffuseColor = glGetUniformLocation(m_shaders.at("planet").handle, "diffuseColor");
 	glUniform3f(locationDiffuseColor, 0.3, 0.4, 0.0);
-
+*/
 	// get uniforms in shader program to set the SpeculativeColor 
 	GLint locationSpeculativeColor = glGetUniformLocation(m_shaders.at("planet").handle, "speculativeColor");
 	glUniform3f(locationSpeculativeColor, 1.0, 1.0, 1.0);
@@ -358,6 +368,46 @@ void ApplicationSolar::loadTextureForSkybox() {
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+}
+// initialize the custom frame buffer
+void ApplicationSolar::initializeCustomFrameBuffer() {
+	//width and height for the window
+	GLsizei WIDTH = 640;
+	GLsizei HEIGHT = 480;
+
+	// define textures for the new frame buffer
+	glGenTextures(1, &texture_object_planets[10].handle);
+	glBindTexture(GL_TEXTURE_2D, texture_object_planets[10].handle);
+	// defining the sampling values
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// give texture data and  texture format to openGL
+	glTexImage2D(GL_TEXTURE_2D,
+		0,
+		GL_RGB,
+		WIDTH, HEIGHT,
+		0,
+		GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	// define render object for the new frame buffer
+
+	glGenRenderbuffers(1, &rbo_handle);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo_handle);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, WIDTH, HEIGHT);
+
+	// define frame buffer
+	glGenFramebuffers(1, &fbo_handle);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo_handle);
+	// define attachments for texture
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture_object_planets[10].handle, 0);
+	//define attachments for render buffer
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo_handle);
+
+	GLenum draw_buffers[1] = {GL_COLOR_ATTACHMENT0};
+	glDrawBuffers(1, draw_buffers);
+	if (GL_FRAMEBUFFER_COMPLETE != glCheckFramebufferStatus(GL_FRAMEBUFFER)) {
+		cout << "frame buffer not ready yet and cannot be written" << endl;
+	}
 }
 
 // load shader sources

@@ -51,7 +51,7 @@ vec4 color_from_tex = texture(ColorTexture, pass_TexCoordinates);
 
 // calculating the ambient color 
 // #assignment 4 get the value from texture sampler
-  vec3 ambient =  vec3(color_from_tex);
+  vec3 ambient =  0.5*vec3(color_from_tex);
   
 // beta function
   vec3 phi = lightIntensity * lightColor;
@@ -70,7 +70,7 @@ vec4 color_from_tex = texture(ColorTexture, pass_TexCoordinates);
 // speculative light
 	vec3 viewDir = normalize(cameraPos - frag_pos);
 	vec3 halfway = normalize(lightDir + viewDir);
-	float shine = shininess;
+	float shine = shininess*0.2;
 	float specularCoffecient = pow(max(dot(pass_Normal, halfway), 0.0), shine);
 	vec3 specular = speculativeColor * specularCoffecient;
 
