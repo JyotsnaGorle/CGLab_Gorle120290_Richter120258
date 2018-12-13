@@ -229,13 +229,13 @@ void ApplicationSolar::uploadView() {
   glUniformMatrix4fv(m_shaders.at("star").u_locs.at("ModelViewMatrix"),
 	  1, GL_FALSE, glm::value_ptr(view_matrix));
   // upload matrix to gpu for orbits
+
   glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ModelViewMatrix"),
 	  1, GL_FALSE, glm::value_ptr(view_matrix));
 }
 
 void ApplicationSolar::uploadProjection() {
   // upload matrix to gpu for stars
-  
   glUniformMatrix4fv(m_shaders.at("star").u_locs.at("ProjectionMatrix"),
 	  1, GL_FALSE, glm::value_ptr(m_view_projection));
   // upload matrix to gpu for planets
@@ -610,51 +610,51 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
   if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
 	  // moving camera  to zoom in
 	  m_view_transform = glm::translate(m_view_transform, cameraFront);
-	  uploadView();
+	  uploadUniforms();
   }
   if (key == GLFW_KEY_S && (action == GLFW_PRESS || action == GLFW_REPEAT))
   {
 	  //moving camera to move up the screen
 	  m_view_transform = glm::translate(m_view_transform, cameraUp);
-	  uploadView();
+	  uploadUniforms();
   }
 
   if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT))
   {
 	  //moving the camera to focus on left of the screen
 	  m_view_transform = glm::translate(m_view_transform, cameraLeft);
-	  uploadView();
+	  uploadUniforms();
   }
 
   if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT))
   {
 	  //moving the camera to focus on right of the screen
 	  m_view_transform = glm::translate(m_view_transform, cameraRight);
-	  uploadView();
+	  uploadUniforms();
   }
 
   if (key == GLFW_KEY_Z && (action == GLFW_PRESS || action == GLFW_REPEAT))
   {
 	  //moving camera to move up the screen
 	  m_view_transform = glm::translate(m_view_transform, cameradown);
-	  uploadView();
+	  uploadUniforms();
   }
 
   if (key == GLFW_KEY_F && (action == GLFW_PRESS || action == GLFW_REPEAT))
   {
 	  //moving camera to zoom out the screen
 	  m_view_transform = glm::translate(m_view_transform, cameraback);
-	  uploadView();
+	  uploadUniforms();
   }
 
   if (key == GLFW_KEY_1 && (action == GLFW_PRESS)) {
 	  modeSwitch = 1.0;
-	  uploadView();
+	  uploadUniforms();
   }
 
   if (key == GLFW_KEY_2 && (action == GLFW_PRESS)) {
 	  modeSwitch = 2.0;
-	  uploadView();
+	  uploadUniforms();
   }
 }
 
@@ -664,9 +664,9 @@ void ApplicationSolar::mouseCallback(double pos_x, double pos_y) {
 	if (isMouseUp) { // if mouse is on window
 		mouseX += pos_x * cameraSpeed;
 		mouseY += pos_y * cameraSpeed;
-		uploadView();
+		uploadUniforms();
 	}
-	uploadView();
+	uploadUniforms();
 }
 
 //handle resizing
