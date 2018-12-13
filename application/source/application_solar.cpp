@@ -489,6 +489,7 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.at("screenquad").u_locs["ColorTexture"] = -1;
   m_shaders.at("screenquad").u_locs["enablehorizontalmirror"] = -1;
   m_shaders.at("screenquad").u_locs["enableverticalmirror"] = -1;
+  m_shaders.at("screenquad").u_locs["enableGrayScale"] = -1;
 }
 
 // load models
@@ -659,6 +660,13 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
 	  uploadUniforms();
   }
 
+  if (key == GLFW_KEY_7 && action == GLFW_PRESS) {
+	  enableGrayScale = !enableGrayScale;
+	  glUseProgram(m_shaders.at("screenquad").handle);
+	  glUniform1i(m_shaders.at("screenquad").u_locs.at("enableGrayScale"), enableGrayScale);
+	  uploadUniforms();
+  }
+
   if (key == GLFW_KEY_8 && action == GLFW_PRESS) {
 	  enablehorizontalmirror = !enablehorizontalmirror;
 	  glUseProgram(m_shaders.at("screenquad").handle);
@@ -672,6 +680,7 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
 	  glUniform1i(m_shaders.at("screenquad").u_locs.at("enableverticalmirror"), enableverticalmirror);
 	  uploadUniforms();
   }
+
 }
 
 //handle delta mouse movement input

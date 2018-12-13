@@ -6,6 +6,7 @@ uniform sampler2D ColorTexture;
 
 uniform bool enablehorizontalmirror;
 uniform bool enableverticalmirror;
+uniform bool enableGrayScale;
 
 out vec4 out_Color;
 
@@ -20,8 +21,12 @@ void main() {
   if(enableverticalmirror) {
 	posx = abs(1.0f - posx);
   }
-  
+
   vec4 fragColor = texture(ColorTexture, vec2(posx,posy));
-  float avg = (fragColor.r + fragColor.g + fragColor.b)/3.0;
-  out_Color = vec4(avg, avg, avg, 1.0);
+  out_Color = fragColor;
+
+  if(enableGrayScale) {
+	float avg = (fragColor.r + fragColor.g + fragColor.b)/3.0;
+	out_Color = vec4(avg, avg, avg, 1.0);
+  }  
 }
