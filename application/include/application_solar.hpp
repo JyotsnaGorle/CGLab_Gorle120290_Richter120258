@@ -83,6 +83,8 @@ class ApplicationSolar : public Application {
   texture_object texture_object_planets[11];
   texture_object texture_object_skybox;
   model_object screen_quad_object;
+  bool enablehorizontalmirror = false;
+  bool enableverticalmirror = false;
 
   vector<std::string> skybox_texture_faces =
   {

@@ -56,7 +56,7 @@ void ApplicationSolar::render() const {
 	//bind new custom frame buffer
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo_handle);
 	// clear the framebuffer
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
 	Node root = scene_graph->getRoot();
@@ -70,7 +70,7 @@ void ApplicationSolar::render() const {
 	
 	for (auto each : children) {
 		// set the model matrix for the planets
-		model_matrix = rotateAndTranslate(glm::mat4(1.0), each);
+		model_matrix = rotateAndTranslate({}, each);
 		//check if planet has any sattelites
 		if (each.getChildrenList().size() > 0) {
 			// planet has satelite and has to rotate around planet
@@ -487,6 +487,8 @@ void ApplicationSolar::initializeShaderPrograms() {
 										   {GL_FRAGMENT_SHADER, m_resource_path + "shaders/screenquad.frag"}} });
   // request uniform locations for shader program
   m_shaders.at("screenquad").u_locs["ColorTexture"] = -1;
+  m_shaders.at("screenquad").u_locs["enablehorizontalmirror"] = -1;
+  m_shaders.at("screenquad").u_locs["enableverticalmirror"] = -1;
 }
 
 // load models
@@ -654,6 +656,20 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
 
   if (key == GLFW_KEY_2 && (action == GLFW_PRESS)) {
 	  modeSwitch = 2.0;
+	  uploadUniforms();
+  }
+
+  if (key == GLFW_KEY_8 && action == GLFW_PRESS) {
+	  enablehorizontalmirror = !enablehorizontalmirror;
+	  glUseProgram(m_shaders.at("screenquad").handle);
+	  glUniform1i(m_shaders.at("screenquad").u_locs.at("enablehorizontalmirror"), enablehorizontalmirror);
+	  uploadUniforms();
+  }
+
+  if (key == GLFW_KEY_9 && action == GLFW_PRESS) {
+	  enableverticalmirror = !enableverticalmirror;
+	  glUseProgram(m_shaders.at("screenquad").handle);
+	  glUniform1i(m_shaders.at("screenquad").u_locs.at("enableverticalmirror"), enableverticalmirror);
 	  uploadUniforms();
   }
 }
