@@ -490,6 +490,8 @@ void ApplicationSolar::initializeShaderPrograms() {
   m_shaders.at("screenquad").u_locs["enablehorizontalmirror"] = -1;
   m_shaders.at("screenquad").u_locs["enableverticalmirror"] = -1;
   m_shaders.at("screenquad").u_locs["enableGrayScale"] = -1;
+  m_shaders.at("screenquad").u_locs["enableKernel"] = -1;
+  
 }
 
 // load models
@@ -649,24 +651,24 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
 	  m_view_transform = glm::translate(m_view_transform, cameraback);
 	  uploadUniforms();
   }
-
+  // mode switch back from toon shading to texture
   if (key == GLFW_KEY_1 && (action == GLFW_PRESS)) {
 	  modeSwitch = 1.0;
 	  uploadUniforms();
   }
-
+  // mode switch to toon shading
   if (key == GLFW_KEY_2 && (action == GLFW_PRESS)) {
 	  modeSwitch = 2.0;
 	  uploadUniforms();
   }
-
+  // gray scale enabling
   if (key == GLFW_KEY_7 && action == GLFW_PRESS) {
 	  enableGrayScale = !enableGrayScale;
 	  glUseProgram(m_shaders.at("screenquad").handle);
 	  glUniform1i(m_shaders.at("screenquad").u_locs.at("enableGrayScale"), enableGrayScale);
 	  uploadUniforms();
   }
-
+  // horizontal flip
   if (key == GLFW_KEY_8 && action == GLFW_PRESS) {
 	  enablehorizontalmirror = !enablehorizontalmirror;
 	  glUseProgram(m_shaders.at("screenquad").handle);
@@ -674,10 +676,18 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
 	  uploadUniforms();
   }
 
+// vertical flip
   if (key == GLFW_KEY_9 && action == GLFW_PRESS) {
 	  enableverticalmirror = !enableverticalmirror;
 	  glUseProgram(m_shaders.at("screenquad").handle);
 	  glUniform1i(m_shaders.at("screenquad").u_locs.at("enableverticalmirror"), enableverticalmirror);
+	  uploadUniforms();
+  }
+  // kernel with blur effect
+  if (key == GLFW_KEY_0 && action == GLFW_PRESS) {
+	  enableKernel = !enableKernel;
+	  glUseProgram(m_shaders.at("screenquad").handle);
+	  glUniform1i(m_shaders.at("screenquad").u_locs.at("enableKernel"), enableKernel);
 	  uploadUniforms();
   }
 

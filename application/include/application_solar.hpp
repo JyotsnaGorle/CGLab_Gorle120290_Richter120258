@@ -86,6 +86,7 @@ class ApplicationSolar : public Application {
   bool enablehorizontalmirror = false;
   bool enableverticalmirror = false;
   bool enableGrayScale = false;
+  bool enableKernel = false;
 
   vector<std::string> skybox_texture_faces =
   {
