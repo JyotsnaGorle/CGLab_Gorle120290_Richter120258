@@ -41,6 +41,8 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
   initializeShaderPrograms();
   // assignment #5
   initializeCustomFrameBuffer();
+  // load screen quad
+  initializeScreenQuad();
 }
 
 ApplicationSolar::~ApplicationSolar() {
@@ -103,7 +105,18 @@ void ApplicationSolar::render() const {
 
 	// render a skybox #assignmnet 4
 	renderSkyBox();
+	// asignment 5
+	// bind again default frame buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	// use shader program for screen quad
+	glUseProgram(m_shaders.at("screenquad").handle);
 
+	glActiveTexture(GL_TEXTURE10);
+	glBindTexture(GL_TEXTURE_2D, texture_object_planets[10].handle);
+	// pass the texture as uniforms to vertext shader for the last txture
+	glUniform1i(m_shaders.at("screenquad").u_locs.at("ColorTexture"), 10);
+	glBindVertexArray(screen_quad_object.vertex_AO);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
 glm::mat4 ApplicationSolar::rotateAndTranslate(glm::mat4 model_matrix, Node node) const{
@@ -369,6 +382,31 @@ void ApplicationSolar::loadTextureForSkybox() {
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 }
+
+// initialize screen quad
+void ApplicationSolar::initializeScreenQuad() {
+	GLfloat quad_coordinates[] = { -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+									1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+									-1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+									1.0f, 1.0f, 0.0f, 1.0f, 1.0f };
+	// generate vertex array object
+	glGenVertexArrays(1, &screen_quad_object.vertex_AO);
+	// bind the VAO
+	glBindVertexArray(screen_quad_object.vertex_AO);
+
+	// generate VBO and bind
+	glGenBuffers(1, &screen_quad_object.vertex_BO);
+	glBindBuffer(GL_ARRAY_BUFFER, screen_quad_object.vertex_BO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quad_coordinates), quad_coordinates, GL_STATIC_DRAW);
+
+	// activate the attributes on the GPU
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, model::POSITION.components, model::POSITION.type, GL_FALSE, 5 * sizeof(float), 0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, model::TEXCOORD.components, model::TEXCOORD.type, GL_FALSE, 5 * sizeof(float), (GLvoid*)(3 * sizeof(float)));
+
+}
+
 // initialize the custom frame buffer
 void ApplicationSolar::initializeCustomFrameBuffer() {
 	//width and height for the window
@@ -443,6 +481,12 @@ void ApplicationSolar::initializeShaderPrograms() {
   // request uniform locations for shader program
   m_shaders.at("orbit").u_locs["ProjectionMatrix"] = -1;
   m_shaders.at("orbit").u_locs["ModelViewMatrix"] = -1;
+
+
+  m_shaders.emplace("screenquad", shader_program{ {{GL_VERTEX_SHADER,m_resource_path + "shaders/screenquad.vert"},
+										   {GL_FRAGMENT_SHADER, m_resource_path + "shaders/screenquad.frag"}} });
+  // request uniform locations for shader program
+  m_shaders.at("screenquad").u_locs["ColorTexture"] = -1;
 }
 
 // load models

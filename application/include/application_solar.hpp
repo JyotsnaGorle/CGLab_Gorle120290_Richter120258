@@ -50,6 +50,7 @@ class ApplicationSolar : public Application {
   void loadTextureForSkybox();
   void renderSkyBox() const;
   void initializeCustomFrameBuffer();
+  void initializeScreenQuad();
 
   // point light node 
   PointLightNode *pointLight;
@@ -81,6 +82,7 @@ class ApplicationSolar : public Application {
   float modeSwitch = 1.0;
   texture_object texture_object_planets[11];
   texture_object texture_object_skybox;
+  model_object screen_quad_object;
 
   vector<std::string> skybox_texture_faces =
   {
@@ -94,6 +96,7 @@ class ApplicationSolar : public Application {
 
   GLuint fbo_handle = 0;
   GLuint rbo_handle = 0;
+
 };
 
 #endif
