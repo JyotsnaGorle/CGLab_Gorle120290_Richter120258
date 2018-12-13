@@ -20,6 +20,8 @@ void main() {
   if(enableverticalmirror) {
 	posx = abs(1.0f - posx);
   }
-
-  out_Color = texture(ColorTexture, vec2(posx,posy));
+  
+  vec4 fragColor = texture(ColorTexture, vec2(posx,posy));
+  float avg = (fragColor.r + fragColor.g + fragColor.b)/3.0;
+  out_Color = vec4(avg, avg, avg, 1.0);
 }
