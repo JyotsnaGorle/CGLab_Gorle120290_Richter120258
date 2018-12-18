@@ -37,9 +37,9 @@ void main() {
     );
 
     float kernel[9] = float[](
-        1.0 / 16, 2.0 / 16, 1.0 / 16,
-		2.0 / 16, 4.0 / 16, 2.0 / 16,
-		1.0 / 16, 2.0 / 16, 1.0 / 16 
+        1.0, 2.0, 1.0,
+		2.0, 4.0, 2.0,
+		1.0, 2.0, 1.0
     );
 
 	vec3 sampleTex[9];
@@ -65,12 +65,21 @@ void main() {
   }
 
   if(enableKernel) {
+  // add offset values to the texture coordinates
 	for(int i = 0; i < 9; i++)
     {
         sampleTex[i] = vec3(texture(ColorTexture, pass_TexCoordinates.xy + offsets[i]));
     }
+
     vec3 col = vec3(0.0);
-    for(int i = 0; i < 9; i++)
+
+   // since my kernel sums upto 16 divide each value by 16 to get it to sum to 1
+   for(int i = 0; i < 9; i++) {
+	kernel[i] = kernel[i]/16;
+   }
+
+   // multiply by kernel weight for the surrounding pixels and current pixel
+	for(int i = 0; i < 9; i++)
         col += sampleTex[i] * kernel[i];
     
     out_Color = vec4(col, 1.0);

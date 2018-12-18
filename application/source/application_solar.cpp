@@ -385,10 +385,10 @@ void ApplicationSolar::loadTextureForSkybox() {
 
 // initialize screen quad
 void ApplicationSolar::initializeScreenQuad() {
-	GLfloat quad_coordinates[] = { -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-									1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-									-1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-									1.0f, 1.0f, 0.0f, 1.0f, 1.0f };
+	GLfloat quad_coordinates[] = { -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, // bottom left xyz and uv 
+									1.0f, -1.0f, 0.0f, 1.0f, 0.0f, // bottom right xyz and uv
+									-1.0f, 1.0f, 0.0f, 0.0f, 1.0f, //top left xyz and uv
+									1.0f, 1.0f, 0.0f, 1.0f, 1.0f }; // top right xyz and uv
 	// generate vertex array object
 	glGenVertexArrays(1, &screen_quad_object.vertex_AO);
 	// bind the VAO
